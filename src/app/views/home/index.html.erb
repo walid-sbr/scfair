@@ -1,0 +1,28 @@
+
+
+<div id='welcome_jumbotron<%= (request.env['HTTP_USER_AGENT'].match(/Safari/)) ? '2' : '' %>' class="jumbotron">
+<%= javascript_tag do %>
+console.log('<%= request.env['HTTP_USER_AGENT'] %>')
+<% end %>
+  <div id='welcome_banner'></div>
+
+  <h1 class="display-4">ScFAIR.org</h1>
+  <p class="lead">An initiative to standardize single-cell genomics metadata.</p>
+  <!-- <hr class="my-4">                                                                                                                
+  <p></p>                                                                                                                               
+  <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>-->
+   <div class='float-end'>
+  <iframe width="560" height="315" style='z-index:10000000;margin-left:25px' src="https://www.youtube.com/embed/9q2q7_DJHRw?si=E_rFiSw0kNDDHDTA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  </div>
+
+   
+<p style='font-size:0.85em;margin-bottom:100px'>
+Single-cell functional genomics is a novel field of biology, which is bringing major insight into the life sciences. Single-cell data are rapidly increasing both in quantity and in diversity, but lack method and metadata standardization. While some large projects have clear standards of reporting, most datasets in biological databases have partial or non-standardized metadata. This leads to multiple non-compatible standards across datasets, and limits reusability, which in turn presents challenges to make these data useful to an in-creasing community of specialists and non-specialists. Therefore, there is a need for a centralized, standardized repository where researchers can collaboratively upload, annotate, or access single-cell metadata.  There is also a need for standards in the way single-cell data are stored and annotated, especially for cell type and other associated information. Indeed, metadata is critical to the capacity to use these large and potentially very informative datasets. It includes protocols, which constrain which transcripts were accessible or which normalizations are relevant, the association between barcodes and annotations, or the methods used to identify cell types. Existing ontologies and controlled vocabularies are not used systematically, even when information is reported. The goal of this proposal is to build a collaborative platform supporting and disseminating ORD practices for the single-cell genomics community, both for sharing datasets and their metadata, and for standardizing the way data are shared across datasets. In addition to the applicants' single-cell community network, we also propose to promote communication and outreach, to increase relevance and implementation of these standards.
+</p>
+
+</div>
+
+<!--<div class='alert alert-secondary'>
+Single-cell functional genomics is a novel field of biology, which is bringing major insight into the life sciences. Single-cell data are rapidly increasing both in quantity and in diversity, but lack method and metadata standardization. While some large projects have clear standards of reporting, most datasets in biological databases have partial or non-standardized metadata. This leads to multiple non-compatible standards across datasets, and limits reusability, which in turn presents challenges to make these data useful to an in-creasing community of specialists and non-specialists. Therefore, there is a need for a centralized, standardized repository where researchers can collaboratively upload, annotate, or access single-cell metadata.  There is also a need for standards in the way single-cell data are stored and annotated, especially for cell type and other associated information. Indeed, metadata is critical to the capacity to use these large and potentially very informative datasets. It includes protocols, which constrain which transcripts were accessible or which normalizations are relevant, the association between barcodes and annotations, or the methods used to identify cell types. Existing ontologies and controlled vocabularies are not used systematically, even when information is reported. The goal of this proposal is to build a collaborative platform supporting and disseminating ORD practices for the single-cell genomics community, both for sharing datasets and their metadata, and for standardizing the way data are shared across datasets. In addition to the applicants' single-cell community network, we also propose to promote communication and outreach, to increase relevance and implementation of these standards.
+</div>
+-->
