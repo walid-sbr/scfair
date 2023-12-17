@@ -3,9 +3,11 @@ version: '3'
 services:
 
   website:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     ports:
-      - "32755:3000"
+      - "3000:3000"
     volumes:
       - ./data:/data/scfair
       - ./src:/opt/scfair
