@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'resources', to: 'home#resources', as: :resources
   get 'metadata-schema', to: 'home#metadata_schema', as: :metadata_schema
   get 'about', to: 'home#about', as: :about
+  get 'community', to: 'home#community', as: :community
 
 
 

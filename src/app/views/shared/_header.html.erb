@@ -29,15 +29,7 @@
               <%= link_to 'Tools', tools_path,  {class: 'nav-link' } %>
             </li>
             <li class="nav-item dropdown">
-              <%= link_to 'Community', '/',  {class: 'nav-link dropdown-toggle btn btn-dark', role:"button", "data-bs-toggle":"dropdown", "aria-expanded":"false" } %>
-              <ul class="dropdown-menu">                
-                <li>
-                  <%= link_to 'Workshops', '/',  {class: "dropdown-item"  } %>
-                </li>
-                <li>
-                  <%= link_to 'Papers', '/',  {class: "dropdown-item" } %>
-                </li>
-              </ul>
+              <%= link_to 'Community', community_path,  {class: 'nav-link', role:"button", "aria-expanded":"false" } %>
             </li>
             <li class="nav-item dropdown">
               <%= link_to 'About', about_path,  {class: 'nav-link', role:"button", "aria-expanded":"false" } %>
