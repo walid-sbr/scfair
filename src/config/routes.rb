@@ -5,20 +5,13 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
 
+  root to: 'home#index'
+
   get 'tools', to: 'home#tools', as: :tools
   get 'contact-us', to: 'home#contact', as: :contact
   get 'resources', to: 'home#resources', as: :resources
   get 'metadata-schema', to: 'home#metadata_schema', as: :metadata_schema
-
-  resources :home do
-    collection do
-      get :index
-      get :team
-    end
-  end
-
-
-  root to: 'home#index'
+  get 'about', to: 'home#about', as: :about
 
 
 
