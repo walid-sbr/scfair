@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'tools', to: 'home#tools', as: :tools
   get 'contact-us', to: 'home#contact', as: :contact
   get 'resources', to: 'home#resources', as: :resources
+  get 'metadata-schema', to: 'home#metadata_schema', as: :metadata_schema
 
   resources :home do
     collection do

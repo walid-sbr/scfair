@@ -5,4 +5,6 @@ class HomeController < ApplicationController
   end
   def resources
   end
+  def metadata_schema
+  end
 end
