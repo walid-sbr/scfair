@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   # root "articles#index"
 
   get 'tools', to: 'home#tools', as: :tools
+  get 'contact-us', to: 'home#contact', as: :contact
 
   resources :home do
     collection do
