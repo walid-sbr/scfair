@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
 
+  get 'tools', to: 'home#tools', as: :tools
+
   resources :home do
     collection do
       get :index
@@ -15,6 +17,6 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
 
-  
+
 
 end
