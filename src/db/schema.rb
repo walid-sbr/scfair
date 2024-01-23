@@ -10,9 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_18_091508) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_23_060320) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "datasets", force: :cascade do |t|
+    t.string "source"
+    t.string "doi"
+    t.string "cell_types", default: [], array: true
+    t.string "tissue", default: [], array: true
+    t.string "tissue_uberon", default: [], array: true
+    t.string "developmental_stage", default: [], array: true
+    t.string "developmental_stage_id", default: [], array: true
+    t.string "sex", default: [], array: true
+    t.string "organisms"
+    t.string "disease"
+    t.string "assay_info"
+    t.integer "number_of_cells"
+    t.string "processed_data"
+    t.string "link_to_dataset"
+    t.string "link_to_explore_data"
+    t.string "link_to_raw_data"
+    t.string "hash"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
