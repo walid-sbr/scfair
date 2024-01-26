@@ -10,11 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_23_060320) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_24_064152) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "datasets", force: :cascade do |t|
+    t.string "collection_id"
+    t.string "dataset_id"
     t.string "source"
     t.string "doi"
     t.string "cell_types", default: [], array: true
@@ -23,15 +25,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_23_060320) do
     t.string "developmental_stage", default: [], array: true
     t.string "developmental_stage_id", default: [], array: true
     t.string "sex", default: [], array: true
-    t.string "organisms"
-    t.string "disease"
-    t.string "assay_info"
-    t.integer "number_of_cells"
-    t.string "processed_data"
+    t.string "organisms", default: [], array: true
+    t.string "disease", default: [], array: true
+    t.string "assay_info", default: [], array: true
+    t.integer "number_of_cells", default: [], array: true
+    t.string "processed_data", default: [], array: true
     t.string "link_to_dataset"
-    t.string "link_to_explore_data"
-    t.string "link_to_raw_data"
-    t.string "hash"
+    t.string "link_to_explore_data", default: [], array: true
+    t.string "link_to_raw_data", default: [], array: true
+    t.string "dataset_hash"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
