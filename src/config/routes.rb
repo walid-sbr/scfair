@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get 'metadata-schema', to: 'home#metadata_schema', as: :metadata_schema
   get 'about', to: 'home#about', as: :about
   get 'community', to: 'home#community', as: :community
+  get 'explore/:page', to: 'explore#show', as: :explore
 
 
 

@@ -1,0 +1,303 @@
+<div class="d-flex flex-column align-items-center">
+    <table class="table table-striped-columns flex-grow-1 align-middle table-sm table-bordered">
+        <thead>
+            <tr>
+                <th class="px-3">Dataset ID</th>
+                <% @datasets.each do |dataset| %>
+                    <th class="text-center"><%= dataset[:id] %></th>
+                <%end%>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            <tr">
+                <th scope="row" class="px-3">Source</th>
+                    <% @datasets.each do |dataset|%>
+                        <td class="text-center"><%= link_to dataset[:source], 'https://cellxgene.cziscience.com/', target: "_blank" %></td>
+                    <%end%>
+            </tr>
+            <tr>
+                <th scope="row" class="px-3">DOI</th>
+                    <% @datasets.each do |dataset|%>
+                        <td class="text-center"><%= dataset[:doi] %></td>
+                    <%end%>
+            </tr>
+
+            <tr>
+                <th scope="row" class="px-3">Number of Cells</th>
+                    <% @datasets.each do |dataset|%>
+                        <td class="text-center"><%= dataset[:number_of_cells][0] %></td>
+                    <%end%>
+            </tr>
+
+            <tr>
+                <th scope="row" class="px-3">Organisms</th>
+                    <% @datasets.each do |dataset|%>
+                        <% if dataset[:organisms].length > 1 %>
+                            <td class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"">
+                                <%= dataset[:organisms][0] %>
+                                <ul class="dropdown-menu text-center">
+                                    <% for i in 1..(dataset[:organisms].length - 1)%>
+                                        <li>
+                                            <%= dataset[:organisms][i] %>
+                                        </li>
+                                    <%end%>
+                                </ul>
+                            </td>
+                        <%else%>
+                        <td class="text-center"> <%= dataset[:organisms][0] %></td>
+                        <%end%>
+                    <%end%>
+            </tr>
+
+            <tr>
+                <th scope="row" class="px-3">Disease</th>
+                    <% @datasets.each do |dataset|%>
+                        <% if dataset[:disease].length > 1 %>
+                            <td class="text-center">
+                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= dataset[:disease][0] %>
+                                <ul class="dropdown-menu">
+                                    <% for i in (1..dataset[:disease].length - 1)%>
+                                        <li class="px-2 py-1">
+                                            <%= dataset[:disease][i] %>
+                                        </li>
+                                    <%end%>
+                                </ul>
+                                </button>
+                            </td>
+                        <%else%>
+                            <td class="text-center"> <%= dataset[:disease][0] %></td>
+                        <%end%>
+                    <%end%>
+            </tr>
+
+            <tr>
+                <th scope="row" class="px-3">Assay Info</th>
+                    <% @datasets.each do |dataset|%>
+                        <% if dataset[:assay_info].length > 1 %>
+                            <td class="text-center">
+                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= dataset[:assay_info][0] %>
+                                <ul class="dropdown-menu">
+                                    <% for i in (1..dataset[:assay_info].length - 1)%>
+                                        <li class="px-2 py-1">
+                                            <%= dataset[:assay_info][i] %>
+                                        </li>
+                                    <%end%>
+                                </ul>
+                                </button>
+                            </td>
+                        <%else%>
+                            <td class="text-center"> <%= dataset[:assay_info][0] %></td>
+                        <%end%>
+                    <%end%>
+            </tr>
+
+            <tr>
+                <th scope="row" class="px-3">Cell Types</th>
+                    <% @datasets.each do |dataset|%>
+                        <% if dataset[:cell_types].length > 1 %>
+                            <td class="text-center">
+                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= dataset[:cell_types][0] %>
+                                <ul class="dropdown-menu">
+                                    <% for i in (1..dataset[:cell_types].length - 1)%>
+                                        <li class="px-2 py-1">
+                                            <%= dataset[:cell_types][i] %>
+                                        </li>
+                                    <%end%>
+                                </ul>
+                                </button>
+                            </td>
+                        <%else%>
+                            <td class="text-center"> <%= dataset[:cell_types][0] %></td>
+                        <%end%>
+                    <%end%>
+            </tr>
+
+            <tr>
+                <th scope="row" class="px-3">Tissue</th>
+                <% @datasets.each do |dataset| %>
+                    <% if dataset[:tissue].length > 1 %>
+                        <td class="text-center">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= dataset[:tissue][0] %>
+                                <ul class="dropdown-menu">
+                                    <% for i in (1..dataset[:tissue].length - 1) %>
+                                        <li class="px-2 py-1">
+                                            <%= dataset[:tissue][i] %>
+                                        </li>
+                                    <% end %>
+                                </ul>
+                            </button>
+                        </td>
+                    <% else %>
+                        <td class="text-center"> <%= dataset[:tissue][0] %></td>
+                    <% end %>
+                <% end %>
+            </tr>
+
+            <tr>
+                <th scope="row" class="px-3">Tissue Uberon</th>
+                <% @datasets.each do |dataset| %>
+                    <% if dataset[:tissue_uberon].length > 1 %>
+                        <td class="text-center">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= dataset[:tissue_uberon][0] %>
+                                <ul class="dropdown-menu">
+                                    <% for i in (1..dataset[:tissue_uberon].length - 1) %>
+                                        <li class="px-2 py-1">
+                                            <%= dataset[:tissue_uberon][i] %>
+                                        </li>
+                                    <% end %>
+                                </ul>
+                            </button>
+                        </td>
+                    <% else %>
+                        <td class="text-center"> <%= dataset[:tissue_uberon][0] %></td>
+                    <% end %>
+                <% end %>
+            </tr>
+
+
+            <tr>
+                <th scope="row" class="px-3">Developmental Stage</th>
+                <% @datasets.each do |dataset| %>
+                    <% if dataset[:developmental_stage].length > 1 %>
+                        <td class="text-center">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= dataset[:developmental_stage][0] %>
+                                <ul class="dropdown-menu">
+                                    <% for i in (1..dataset[:developmental_stage].length - 1) %>
+                                        <li class="px-2 py-1">
+                                            <%= dataset[:developmental_stage][i] %>
+                                        </li>
+                                    <% end %>
+                                </ul>
+                            </button>
+                        </td>
+                    <% else %>
+                        <td class="text-center"> <%= dataset[:developmental_stage][0] %></td>
+                    <% end %>
+                <% end %>
+            </tr>
+
+
+            <tr>
+                <th scope="row" class="px-3">Developmental Stage ID</th>
+                <% @datasets.each do |dataset| %>
+                    <% if dataset[:developmental_stage_id].length > 1 %>
+                        <td class="text-center">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= dataset[:developmental_stage_id][0] %>
+                                <ul class="dropdown-menu">
+                                    <% for i in (1..dataset[:developmental_stage_id].length - 1) %>
+                                        <li class="px-2 py-1">
+                                            <%= dataset[:developmental_stage_id][i] %>
+                                        </li>
+                                    <% end %>
+                                </ul>
+                            </button>
+                        </td>
+                    <% else %>
+                        <td class="text-center"> <%= dataset[:developmental_stage_id][0] %></td>
+                    <% end %>
+                <% end %>
+            </tr>
+
+
+            <tr>
+                <th scope="row" class="px-3">Sex</th>
+                <% @datasets.each do |dataset| %>
+                    <% if dataset[:sex].length > 1 %>
+                        <td class="text-center">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= dataset[:sex][0] %>
+                                <ul class="dropdown-menu">
+                                    <% for i in (1..dataset[:sex].length - 1) %>
+                                        <li class="px-2 py-1">
+                                            <%= dataset[:sex][i] %>
+                                        </li>
+                                    <% end %>
+                                </ul>
+                            </button>
+                        </td>
+                    <% else %>
+                        <td class="text-center"> <%= dataset[:sex][0] %></td>
+                    <% end %>
+                <% end %>
+            </tr>
+
+
+            <tr>
+                <th scope="row" class="px-3">Processed Data</th>
+                <% @datasets.each do |dataset| %>
+                    <% if dataset[:processed_data].length > 1 %>
+                        <td class="text-center">
+                            <ul class="list-group list-group-flush">
+                                <% for i in (0..dataset[:processed_data].length - 1) %>
+                                    <li class="list-group-item">
+                                        <% extension = dataset[:processed_data][i].split('.')[-1]%>
+                                        <%= link_to "download .#{extension}", dataset[:processed_data][i], class: "btn btn-dark px-2 w-75 display-block" %>
+                                    </li>
+                                <% end %>
+                            </ul>
+                        </td>
+                    <% else %>
+                        <td class="text-center"> 
+                            <% extension = dataset[:processed_data][0].split('.')[-1]%>
+                           <%= link_to "download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block" %>
+                        </td>
+                    <% end %>
+                <% end %>
+            </tr>
+
+
+            <tr>
+                <th scope="row" class="px-3">Link to Dataset</th>
+                <% @datasets.each do |dataset| %>
+                    <td class="text-center">
+                        <%= link_to 'Go to dataset', dataset[:link_to_dataset], target: "_blank", class: "btn btn-warning px-2 w-75 display-block" %>
+                    </td>
+                <% end %>
+            </tr>
+
+            <tr>
+                <th scope="row" class="px-3">Link to Raw Data</th>
+                <% @datasets.each do |dataset| %>
+                    <% if dataset[:link_to_raw_data].length > 1 %>
+                        <td class="text-center align-top">
+                            <ul class="list-group list-group-flush">
+                                <% for i in (0..dataset[:link_to_raw_data].length - 1) %>
+                                    <li class="list-group-item">
+                                        <%= link_to "Raw data #{i}", dataset[:link_to_raw_data][i], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block" %>
+                                    </li>
+                                <% end %>
+                            </ul>
+                        </td>
+                    <% else %>
+                        <% dataset[:link_to_raw_data].length == 0 ? empty = true : empty = false %>
+                        <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
+                            <%= empty ? '' : (link_to "Raw data", dataset[:link_to_raw_data][0], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block") %>
+                        </td>
+                    <% end %>
+                <% end %>
+            </tr>
+        </tbody>
+    </table>
+    <nav class="mt-4" aria-label="...">
+        <ul class="pagination">
+            <li class="page-item <%= @page_number == 1 ? 'disabled' : ''%>">
+                <%= link_to 'Previous', explore_path(@page_number - 1), class: "page-link text"%>
+            </li>
+            <% for i in @page_number..(@page_number + 10) %>
+                <li class="page-item <%= @page_number == i ? "active" : ''%>" <%= @page_number == i ? 'aria-current="page"' : ''%>>
+                    <%= link_to i, explore_path(i), class: "page-link text"%>
+                </li> 
+            <%end%>
+            <li class="page-item <%= @page_number == (@number_of_rows / 5) ? 'disabled' : ''%>">
+                <%= link_to 'Next', explore_path(@page_number + 1), class: "page-link text"%>
+            </li>
+        </ul>
+    </nav>
+</div>
