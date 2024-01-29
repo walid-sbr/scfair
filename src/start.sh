@@ -1,3 +1,12 @@
-./bin/rails server -p 3000
-yarn build --watch
-yarn build:css --watch
+#!/bin/bash
+
+rm -f ./tmp/pids/server.pid
+
+# Install node_modules if doesn't exist in container
+if [ ! -d "node_modules" ]; then
+    npm i
+fi
+
+bundle install
+
+yarn build --watch & yarn build:css --watch & ./bin/rails server -p 3000 && fg 
