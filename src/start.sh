@@ -9,4 +9,4 @@ fi
 
 bundle install
 
-yarn build --watch & yarn build:css --watch & ./bin/rails server -p 3000 && fg 
+yarn build --watch & yarn build:css --watch & ./bin/rails server -b "0.0.0.0" && fg 
