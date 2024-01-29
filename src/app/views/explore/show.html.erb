@@ -290,8 +290,8 @@
             <li class="page-item <%= @page_number == 1 ? 'disabled' : ''%>">
                 <%= link_to 'Previous', explore_path(@page_number - 1), class: "page-link text"%>
             </li>
-            <% for i in @page_number..(@page_number + 10) %>
-                <li class="page-item <%= @page_number == i ? "active" : ''%>" <%= @page_number == i ? 'aria-current="page"' : ''%>>
+            <% for i in get_pagination @page_number, @number_of_rows %>
+                <li class="page-item <%= @page_number == i ? "active" : '' %>" <%= @page_number == i ? 'aria-current="page"' : ''%>>
                     <%= link_to i, explore_path(i), class: "page-link text"%>
                 </li> 
             <%end%>
