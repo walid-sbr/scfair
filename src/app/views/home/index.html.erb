@@ -6,14 +6,10 @@
       <p>Our goal is to build a collaborative platform supporting and disseminating ORD practices for the single-cell genomics community, both for sharing datasets and their metadata, and for standardizing the way data are shared across datasets. In addition to the applicants' single-cell community network, we also propose to promote communication and outreach, to increase relevance and implementation of these standards</p>
       <div class="row gx-5">
         <div class="col-6">
-          <button class="w-100 btn btn-primary text-light">
-            Explore single-cell data
-          </button>
+          <%= link_to 'Explore single-cell data', explore_path(1), class: "w-100 btn btn-primary text-light"%>
         </div>
         <div class="col-6">
-          <button class="w-100 btn btn-outline-dark">
-            View tools that support the FAIR initiative
-          </button>          
+          <%= link_to 'View tools that support the FAIR initiative', tools_path, class: "w-100 btn btn-outline-dark"%>        
         </div>
       </div>
     </div>
