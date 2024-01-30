@@ -3,5 +3,9 @@ $secondary: #6CADC8;
 $light: #F9E9EC;
 $dark: #0B0A22;
 
+.table-min-w {
+    min-width: 300px;
+}
+
 @import 'bootstrap/scss/bootstrap';
 @import '~bootstrap-icons/font/bootstrap-icons.css';
