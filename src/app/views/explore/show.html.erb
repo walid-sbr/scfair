@@ -15,6 +15,7 @@
                 </li>
             </ul>
         </nav>
+        <p>Number of results <%= @number_of_rows %> </p>
     </div>
     <div class="table-responsive">
         <table class="table table-striped-columns align-middle table-bordered">
@@ -36,7 +37,7 @@
                 <tr>
                     <th scope="row" class="px-3">DOI</th>
                         <% @datasets.each do |dataset|%>
-                            <td class="text-center"><%= dataset[:doi] %></td>
+                            <td class="text-center <%= dataset[:doi].nil? ? 'bg-light' : ''%>"><%= dataset[:doi] %></td>
                         <%end%>
                 </tr>
 
@@ -262,10 +263,11 @@
                                 </ul>
                             </td>
                         <% else %>
-                            <td class="text-center"> 
-                                <% extension = dataset[:processed_data][0].split('.')[-1]%>
-                            <%= link_to "download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block" %>
-                            </td>
+                            <% dataset[:processed_data].one? {|e| e.nil?} ? empty = true : empty = false %>
+                                <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
+                                    <%= empty ? '' : extension = dataset[:processed_data][i].split('.')[-1]%>
+                                    <%= empty ? '' : (link_to "download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block") %>
+                                </td>
                         <% end %>
                     <% end %>
                 </tr>
