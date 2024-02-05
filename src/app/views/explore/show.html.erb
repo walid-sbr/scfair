@@ -1,5 +1,7 @@
 <div class="d-flex flex-column flex-grow-1">
-    <div class="d-flex justify-content-center align-items-center w-100 py-4">
+    <div class="d-flex justify-content-between align-items-center w-100 p-4">
+        <div>
+        </div>
         <nav class="p-0 m-0" aria-label="...">
             <ul class="pagination">
                 <li class="page-item <%= @page_number == 1 ? 'disabled' : ''%>">
@@ -15,7 +17,9 @@
                 </li>
             </ul>
         </nav>
-        <p>Number of results <%= @number_of_rows %> </p>
+        <p>
+            Number of results: <span class="badge bg-secondary p-2" > <%= @number_of_rows %> </span>
+        </p>
     </div>
     <div class="table-responsive">
         <table class="table table-striped-columns align-middle table-bordered">
@@ -37,7 +41,7 @@
                 <tr>
                     <th scope="row" class="px-3">DOI</th>
                         <% @datasets.each do |dataset|%>
-                            <td class="text-center <%= dataset[:doi].nil? ? 'bg-light' : ''%>"><%= dataset[:doi] %></td>
+                            <td class="text-center <%= dataset[:doi].nil? ? 'bg-light' : ''%> "><%= dataset[:doi] %></td>
                         <%end%>
                 </tr>
 
@@ -52,7 +56,7 @@
                     <th scope="row" class="px-3">Organisms</th>
                         <% @datasets.each do |dataset|%>
                             <% if dataset[:organisms].length > 1 %>
-                                <td class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"">
+                                <td class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <%= dataset[:organisms][0] %>
                                     <ul class="dropdown-menu text-center">
                                         <% for i in 1..(dataset[:organisms].length - 1)%>
@@ -265,7 +269,8 @@
                         <% else %>
                             <% dataset[:processed_data].one? {|e| e.nil?} ? empty = true : empty = false %>
                                 <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
-                                    <%= empty ? '' : extension = dataset[:processed_data][i].split('.')[-1]%>
+
+                                    <% empty ? '' : extension = dataset[:processed_data][0].split('.')[-1] %>
                                     <%= empty ? '' : (link_to "download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block") %>
                                 </td>
                         <% end %>
