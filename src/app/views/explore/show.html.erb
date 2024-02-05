@@ -56,15 +56,17 @@
                     <th scope="row" class="px-3">Organisms</th>
                         <% @datasets.each do |dataset|%>
                             <% if dataset[:organisms].length > 1 %>
-                                <td class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <%= dataset[:organisms][0] %>
-                                    <ul class="dropdown-menu text-center">
-                                        <% for i in 1..(dataset[:organisms].length - 1)%>
-                                            <li>
-                                                <%= dataset[:organisms][i] %>
-                                            </li>
-                                        <%end%>
-                                    </ul>
+                                <td class="text-center">
+                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <%= dataset[:organisms][0] %>
+                                        <ul class="dropdown-menu text-center">
+                                            <% for i in 1..(dataset[:organisms].length - 1)%>
+                                                <li>
+                                                    <%= dataset[:organisms][i] %>
+                                                </li>
+                                            <%end%>
+                                        </ul>
+                                    </button>
                                 </td>
                             <%else%>
                             <td class="text-center"> <%= dataset[:organisms][0] %></td>
