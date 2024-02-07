@@ -9,6 +9,8 @@ RUN mkdir -p /opt/mimemagic
 
 WORKDIR /opt/scfair/src
 
+COPY ./src .
+
 ENV FREEDESKTOP_MIME_TYPES_PATH=/opt/mimemagic
 
 CMD ["./start.sh"]
