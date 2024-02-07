@@ -7,9 +7,8 @@ RUN apk add postgresql-dev git build-base nodejs bash npm yarn busybox-extras cu
 
 RUN mkdir -p /opt/mimemagic
 
-
-WORKDIR /opt/scfair
+WORKDIR /opt/scfair/src
 
 ENV FREEDESKTOP_MIME_TYPES_PATH=/opt/mimemagic
 
-CMD ["/src/start.sh"]
+CMD ["./start.sh"]
