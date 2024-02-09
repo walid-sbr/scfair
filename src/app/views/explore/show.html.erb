@@ -55,7 +55,7 @@
                                 <%case field_value%>
                                     <%when :tissue_uberon %>
                                         <td class="text-center">
-                                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="inside" aria-expanded="false">
+                                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
                                             </button>
                                             <ul class="dropdown-menu">
@@ -68,7 +68,7 @@
                                         </td>                                   
                                     <%when :developmental_stage_id %>
                                         <td class="text-center">
-                                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="inside" aria-expanded="false">
+                                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -141,29 +141,39 @@
                 <tr>
                     <th scope="row" class="px-3">Link to Dataset</th>
                     <% @datasets.each do |dataset| %>
-                        <td class="text-center">
-                            <%= link_to 'Go to dataset', dataset[:link_to_dataset], target: "_blank", class: "btn btn-warning px-2 w-75 display-block" %>
+                        <% dataset[:link_to_dataset].nil? ? empty = true : empty = false %>
+                        <td class="text-center <%= empty ? "bg-light" : "" %>">
+                            <%if !empty%>
+                                <% uri = URI(dataset[:link_to_dataset])%>
+                                <%= link_to "Go to #{uri.host}", dataset[:link_to_dataset], target: "_blank", class: "btn btn-warning px-2 display-block" %>
+                            <%end%>
                         </td>
                     <% end %>
                 </tr>
 
                 <tr>
-                    <th scope="row" class="px-3">Link to Raw Data</th>
+                    <th scope="row" class="px-3">External resources</th>
                     <% @datasets.each do |dataset| %>
                         <% if dataset[:link_to_raw_data].length > 1 %>
-                            <td class="text-center align-top">
-                                <ul class="list-group list-group-flush">
-                                    <% for i in (0..dataset[:link_to_raw_data].length - 1) %>
-                                        <li class="list-group-item">
-                                            <%= link_to "Raw data #{i}", dataset[:link_to_raw_data][i], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block" %>
+                            <td class="text-center">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <%= "#{dataset[:link_to_raw_data].length} external resources" %>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <% for i in (0..dataset[:link_to_raw_data].length - 1)%>
+                                        <li class="px-2 py-1">
+                                            <% uri = URI.parse(dataset[:link_to_raw_data][i]) %>
+                                           <%= link_to uri.host, dataset[:link_to_raw_data][i], target: "_blank" %>
                                         </li>
-                                    <% end %>
+                                    <%end%>
                                 </ul>
-                            </td>
+                            </td> 
                         <% else %>
                             <% dataset[:link_to_raw_data].length == 0 ? empty = true : empty = false %>
+                            
                             <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
-                                <%= empty ? '' : (link_to "Raw data", dataset[:link_to_raw_data][0], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block") %>
+                                <% uri = URI(dataset[:link_to_raw_data][0]) %>
+                                <%= empty ? '' : (link_to uri.host, dataset[:link_to_raw_data][0], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block") %>
                             </td>
                         <% end %>
                     <% end %>
