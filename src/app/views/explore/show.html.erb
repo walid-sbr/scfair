@@ -121,7 +121,7 @@
                                     <% for i in (0..dataset[:processed_data].length - 1) %>
                                         <li class="list-group-item">
                                             <% extension = dataset[:processed_data][i].split('.')[-1]%>
-                                            <%= link_to "download .#{extension}", dataset[:processed_data][i], class: "btn btn-dark px-2 w-75 display-block" %>
+                                            <%= link_to "Download .#{extension}", dataset[:processed_data][i], class: "btn btn-dark px-2 w-75 display-block" %>
                                         </li>
                                     <% end %>
                                 </ul>
@@ -131,7 +131,7 @@
                                 <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
 
                                     <% empty ? '' : extension = dataset[:processed_data][0].split('.')[-1] %>
-                                    <%= empty ? '' : (link_to "download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block") %>
+                                    <%= empty ? '' : (link_to "Download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block") %>
                                 </td>
                         <% end %>
                     <% end %>
@@ -172,7 +172,7 @@
                             <% dataset[:link_to_raw_data].length == 0 ? empty = true : empty = false %>
                             
                             <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
-                                <% uri = URI(dataset[:link_to_raw_data][0]) %>
+                                <% empty ? "" : uri = URI(dataset[:link_to_raw_data][0]) %>
                                 <%= empty ? '' : (link_to uri.host, dataset[:link_to_raw_data][0], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block") %>
                             </td>
                         <% end %>
