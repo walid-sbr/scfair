@@ -8,7 +8,6 @@ services:
       - "32735:3000"
     volumes:
       - ./data:/data/tindex/
-      - /opt/scfair/src/log:/opt/scfair/src/log
     env_file: .env.prod
    
   postgres:
