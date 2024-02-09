@@ -47,214 +47,70 @@
                         <%end%>
                 </tr>
 
+            <% @fields.each do |field_name, field_value| %>
                 <tr>
-                    <th scope="row" class="px-3">Number of Cells</th>
+                    <th scope="row" class="px-3"><%= field_name %></th>
                         <% @datasets.each do |dataset|%>
-                            <td class="text-center"><%= dataset[:number_of_cells][0] %></td>
-                        <%end%>
-                </tr>
-
-                <tr>
-                    <th scope="row" class="px-3">Organisms</th>
-                        <% @datasets.each do |dataset|%>
-                            <% if dataset[:organisms].length > 1 %>
-                                <td class="text-center">
-                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <%= dataset[:organisms][0] %>
-                                        <ul class="dropdown-menu text-center">
-                                            <% for i in 1..(dataset[:organisms].length - 1)%>
-                                                <li>
-                                                    <%= dataset[:organisms][i] %>
-                                                </li>
-                                            <%end%>
-                                        </ul>
-                                    </button>
-                                </td>
+                            <% if dataset[field_value].length > 1 %>
+                                <%case field_value%>
+                                    <%when :tissue_uberon %>
+                                        <td class="text-center">
+                                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="inside" aria-expanded="false">
+                                                <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <% for i in (0..dataset[field_value].length - 1)%>
+                                                    <li class="px-2 py-1">
+                                                        <%= link_to dataset[field_value][i], "#{ontology_link_generator "uberon", dataset[field_value][i]}", target: "_blank" %>
+                                                    </li>
+                                                <%end%>
+                                            </ul>
+                                        </td>                                   
+                                    <%when :developmental_stage_id %>
+                                        <td class="text-center">
+                                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="inside" aria-expanded="false">
+                                                <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                <% for i in (0..dataset[field_value].length - 1)%>
+                                                    <li class="px-2 py-1">
+                                                        <% type =  dataset[field_value][i].split(":")[0].downcase %>
+                                                        <%= link_to dataset[field_value][i], "#{ontology_link_generator type, dataset[field_value][i]}", target: "_blank" %>
+                                                    </li>
+                                                <%end%>
+                                            </ul>
+                                        </td>                                     
+                                    <%else%>
+                                        <td class="text-center">
+                                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <% for i in (0..dataset[field_value].length - 1)%>
+                                                    <li class="px-2 py-1">
+                                                        <%= dataset[field_value][i] %>
+                                                    </li>
+                                                <%end%>
+                                            </ul>
+                                        </td> 
+                                <%end%>                                
                             <%else%>
-                            <td class="text-center"> <%= dataset[:organisms][0] %></td>
+                                <% dataset[field_value].one? {|e| e.nil?} ? empty = true : empty = false %>
+                                <td class="text-center <%= empty ? "bg-light": "" %>">
+                                    <%case field_value%>
+                                        <%when :tissue_uberon %>
+                                            <%= link_to dataset[field_value][0], "#{ontology_link_generator "uberon", dataset[field_value][0]}", target: "_blank" %>
+                                        <%when :developmental_stage_id %>
+                                            <% type =  dataset[field_value][0].split(":")[0].downcase %>
+                                            <%= link_to dataset[field_value][0], "#{ontology_link_generator type, dataset[field_value][0]}", target: "_blank" %>
+                                        <%else%>
+                                            <%= dataset[field_value][0] %>
+                                    <%end%>
+                                </td>
                             <%end%>
                         <%end%>
                 </tr>
-
-                <tr>
-                    <th scope="row" class="px-3">Disease</th>
-                        <% @datasets.each do |dataset|%>
-                            <% if dataset[:disease].length > 1 %>
-                                <td class="text-center">
-                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <%= dataset[:disease][0] %>
-                                    <ul class="dropdown-menu">
-                                        <% for i in (1..dataset[:disease].length - 1)%>
-                                            <li class="px-2 py-1">
-                                                <%= dataset[:disease][i] %>
-                                            </li>
-                                        <%end%>
-                                    </ul>
-                                    </button>
-                                </td>
-                            <%else%>
-                                <td class="text-center"> <%= dataset[:disease][0] %></td>
-                            <%end%>
-                        <%end%>
-                </tr>
-
-                <tr>
-                    <th scope="row" class="px-3">Assay Info</th>
-                        <% @datasets.each do |dataset|%>
-                            <% if dataset[:assay_info].length > 1 %>
-                                <td class="text-center">
-                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <%= dataset[:assay_info][0] %>
-                                    <ul class="dropdown-menu">
-                                        <% for i in (1..dataset[:assay_info].length - 1)%>
-                                            <li class="px-2 py-1">
-                                                <%= dataset[:assay_info][i] %>
-                                            </li>
-                                        <%end%>
-                                    </ul>
-                                    </button>
-                                </td>
-                            <%else%>
-                                <td class="text-center"> <%= dataset[:assay_info][0] %></td>
-                            <%end%>
-                        <%end%>
-                </tr>
-
-                <tr>
-                    <th scope="row" class="px-3">Cell Types</th>
-                        <% @datasets.each do |dataset|%>
-                            <% if dataset[:cell_types].length > 1 %>
-                                <td class="text-center">
-                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <%= dataset[:cell_types][0] %>
-                                    <ul class="dropdown-menu">
-                                        <% for i in (1..dataset[:cell_types].length - 1)%>
-                                            <li class="px-2 py-1">
-                                                <%= dataset[:cell_types][i] %>
-                                            </li>
-                                        <%end%>
-                                    </ul>
-                                    </button>
-                                </td>
-                            <%else%>
-                                <td class="text-center"> <%= dataset[:cell_types][0] %></td>
-                            <%end%>
-                        <%end%>
-                </tr>
-
-                <tr>
-                    <th scope="row" class="px-3">Tissue</th>
-                    <% @datasets.each do |dataset| %>
-                        <% if dataset[:tissue].length > 1 %>
-                            <td class="text-center">
-                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <%= dataset[:tissue][0] %>
-                                    <ul class="dropdown-menu">
-                                        <% for i in (1..dataset[:tissue].length - 1) %>
-                                            <li class="px-2 py-1">
-                                                <%= dataset[:tissue][i] %>
-                                            </li>
-                                        <% end %>
-                                    </ul>
-                                </button>
-                            </td>
-                        <% else %>
-                            <td class="text-center"> <%= dataset[:tissue][0] %></td>
-                        <% end %>
-                    <% end %>
-                </tr>
-
-                <tr>
-                    <th scope="row" class="px-3">Tissue Uberon</th>
-                    <% @datasets.each do |dataset| %>
-                        <% if dataset[:tissue_uberon].length > 1 %>
-                            <td class="text-center">
-                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <%= dataset[:tissue_uberon][0] %>
-                                    <ul class="dropdown-menu">
-                                        <% for i in (1..dataset[:tissue_uberon].length - 1) %>
-                                            <li class="px-2 py-1">
-                                                <%= dataset[:tissue_uberon][i] %>
-                                            </li>
-                                        <% end %>
-                                    </ul>
-                                </button>
-                            </td>
-                        <% else %>
-                            <td class="text-center"> <%= dataset[:tissue_uberon][0] %></td>
-                        <% end %>
-                    <% end %>
-                </tr>
-
-
-                <tr>
-                    <th scope="row" class="px-3">Developmental Stage</th>
-                    <% @datasets.each do |dataset| %>
-                        <% if dataset[:developmental_stage].length > 1 %>
-                            <td class="text-center">
-                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <%= dataset[:developmental_stage][0] %>
-                                    <ul class="dropdown-menu">
-                                        <% for i in (1..dataset[:developmental_stage].length - 1) %>
-                                            <li class="px-2 py-1">
-                                                <%= dataset[:developmental_stage][i] %>
-                                            </li>
-                                        <% end %>
-                                    </ul>
-                                </button>
-                            </td>
-                        <% else %>
-                            <td class="text-center"> <%= dataset[:developmental_stage][0] %></td>
-                        <% end %>
-                    <% end %>
-                </tr>
-
-
-                <tr>
-                    <th scope="row" class="px-3">Developmental Stage ID</th>
-                    <% @datasets.each do |dataset| %>
-                        <% if dataset[:developmental_stage_id].length > 1 %>
-                            <td class="text-center">
-                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <%= dataset[:developmental_stage_id][0] %>
-                                    <ul class="dropdown-menu">
-                                        <% for i in (1..dataset[:developmental_stage_id].length - 1) %>
-                                            <li class="px-2 py-1">
-                                                <%= dataset[:developmental_stage_id][i] %>
-                                            </li>
-                                        <% end %>
-                                    </ul>
-                                </button>
-                            </td>
-                        <% else %>
-                            <td class="text-center"> <%= dataset[:developmental_stage_id][0] %></td>
-                        <% end %>
-                    <% end %>
-                </tr>
-
-
-                <tr>
-                    <th scope="row" class="px-3">Sex</th>
-                    <% @datasets.each do |dataset| %>
-                        <% if dataset[:sex].length > 1 %>
-                            <td class="text-center">
-                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <%= dataset[:sex][0] %>
-                                    <ul class="dropdown-menu">
-                                        <% for i in (1..dataset[:sex].length - 1) %>
-                                            <li class="px-2 py-1">
-                                                <%= dataset[:sex][i] %>
-                                            </li>
-                                        <% end %>
-                                    </ul>
-                                </button>
-                            </td>
-                        <% else %>
-                            <td class="text-center"> <%= dataset[:sex][0] %></td>
-                        <% end %>
-                    <% end %>
-                </tr>
-
+            <%end%>
 
                 <tr>
                     <th scope="row" class="px-3">Processed Data</th>
