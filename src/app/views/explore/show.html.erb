@@ -41,7 +41,9 @@
                 <tr>
                     <th scope="row" class="px-3">DOI</th>
                         <% @datasets.each do |dataset|%>
-                            <td class="text-center <%= dataset[:doi].nil? ? 'bg-light' : ''%> "><%= dataset[:doi] %></td>
+                            <td class="text-center <%= dataset[:doi].nil? ? 'bg-light' : '' %> ">
+                                <%= dataset[:doi].nil? ? "" : (link_to dataset[:doi], "https://dx.doi.org/#{dataset[:doi]}", target: "_blank")  %>
+                            </td>
                         <%end%>
                 </tr>
 
