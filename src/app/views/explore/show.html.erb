@@ -5,15 +5,15 @@
         <nav class="p-0 m-0" aria-label="...">
             <ul class="pagination">
                 <li class="page-item <%= @page_number == 1 ? 'disabled' : ''%>">
-                    <%= link_to 'Previous', explore_path(@page_number - 1), class: "page-link text"%>
+                    <%= link_to 'Previous', generate_url(@page_number - 1), class: "page-link text"%>
                 </li>
                 <% for i in get_pagination @page_number, @number_of_rows %>
                     <li class="page-item <%= @page_number == i ? "active" : '' %>" <%= @page_number == i ? 'aria-current="page"' : ''%>>
-                        <%= link_to i, explore_path(i), class: "page-link text"%>
+                        <%= link_to i, generate_url(i), class: "page-link text"%>
                     </li> 
                 <%end%>
                 <li class="page-item <%= @page_number == (@number_of_rows / 5) ? 'disabled' : ''%>">
-                    <%= link_to 'Next', explore_path(@page_number + 1), class: "page-link text"%>
+                    <%= link_to 'Next', generate_url(@page_number + 1), class: "page-link text"%>
                 </li>
             </ul>
         </nav>
@@ -21,164 +21,177 @@
             Number of results: <span class="badge bg-secondary p-2" > <%= @number_of_rows %> </span>
         </p>
     </div>
-    <div class="table-responsive">
-        <table class="table table-striped-columns align-middle table-bordered">
-            <thead>
-                <tr>
-                    <th class="px-3 table-min-w">Dataset ID</th>
-                    <% @datasets.each do |dataset| %>
-                        <th class="text-center table-min-w"><%= dataset[:id] %></th>
-                    <%end%>
-                </tr>
-            </thead>
-            <tbody class="table-group-divider">
-                <tr">
-                    <th scope="row" class="px-3">Source</th>
-                        <% @datasets.each do |dataset|%>
-                            <td class="text-center"><%= link_to dataset[:source], 'https://cellxgene.cziscience.com/', target: "_blank" %></td>
+    <form action="<%= generate_url 1 %>" method="get">
+        <div class="table-responsive">
+            <table class="table table-striped-columns align-middle table-bordered">
+                <thead>
+                    <tr>
+                        <th class="px-3 table-min-w">Dataset ID</th>
+                        <% @datasets.each do |dataset| %>
+                            <th class="text-center table-min-w"><%= dataset[:id] %></th>
                         <%end%>
-                </tr>
-                <tr>
-                    <th scope="row" class="px-3">DOI</th>
-                        <% @datasets.each do |dataset|%>
-                            <td class="text-center <%= dataset[:doi].nil? ? 'bg-light' : '' %> ">
-                                <%= dataset[:doi].nil? ? "" : (link_to dataset[:doi], "https://dx.doi.org/#{dataset[:doi]}", target: "_blank")  %>
-                            </td>
-                        <%end%>
-                </tr>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    <tr>
+                        <th class="d-flex justify-content-between" scope="row" class="px-3">
+                            <p>Source</p>
+                            <select name="source" class="form-select w-50" onchange="this.form.submit()">
+                                <option value="all" <%= 'selected' if params[:source].nil? %> >All</option>
+                                <% @sources.each do |source| %>
+                                    <option value="<%= source %>" <%= 'selected' if params[:source] == source %>>
+                                        <%= source %>
+                                    </option>                                
+                                <%end%>
+                            </select>
 
-            <% @fields.each do |field_name, field_value| %>
-                <tr>
-                    <th scope="row" class="px-3"><%= field_name %></th>
-                        <% @datasets.each do |dataset|%>
-                            <% if dataset[field_value].length > 1 %>
-                                <%case field_value%>
-                                    <%when :tissue_uberon %>
-                                        <td class="text-center">
-                                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <% for i in (0..dataset[field_value].length - 1)%>
-                                                    <li class="px-2 py-1">
-                                                        <%= link_to dataset[field_value][i], "#{ontology_link_generator "uberon", dataset[field_value][i]}", target: "_blank" %>
-                                                    </li>
-                                                <%end%>
-                                            </ul>
-                                        </td>                                   
-                                    <%when :developmental_stage_id %>
-                                        <td class="text-center">
-                                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
-                                            </button>
-                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                <% for i in (0..dataset[field_value].length - 1)%>
-                                                    <li class="px-2 py-1">
-                                                        <% type =  dataset[field_value][i].split(":")[0].downcase %>
-                                                        <%= link_to dataset[field_value][i], "#{ontology_link_generator type, dataset[field_value][i]}", target: "_blank" %>
-                                                    </li>
-                                                <%end%>
-                                            </ul>
-                                        </td>                                     
-                                    <%else%>
-                                        <td class="text-center">
-                                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <% for i in (0..dataset[field_value].length - 1)%>
-                                                    <li class="px-2 py-1">
-                                                        <%= dataset[field_value][i] %>
-                                                    </li>
-                                                <%end%>
-                                            </ul>
-                                        </td> 
-                                <%end%>                                
-                            <%else%>
-                                <% dataset[field_value].one? {|e| e.nil?} ? empty = true : empty = false %>
-                                <td class="text-center <%= empty ? "bg-light": "" %>">
+                        </th>
+                            <% @datasets.each do |dataset|%>
+                                <td class="text-center"><%= link_to dataset[:source], 'https://cellxgene.cziscience.com/', target: "_blank" %></td>
+                            <%end%>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="px-3">DOI</th>
+                            <% @datasets.each do |dataset|%>
+                                <td class="text-center <%= dataset[:doi].nil? ? 'bg-light' : '' %> ">
+                                    <%= dataset[:doi].nil? ? "" : (link_to dataset[:doi], "https://dx.doi.org/#{dataset[:doi]}", target: "_blank")  %>
+                                </td>
+                            <%end%>
+                    </tr>
+
+                <% @fields.each do |field_name, field_value| %>
+                    <tr>
+                        <th scope="row" class="px-3"><%= field_name %></th>
+                            <% @datasets.each do |dataset|%>
+                                <% if dataset[field_value].length > 1 %>
                                     <%case field_value%>
                                         <%when :tissue_uberon %>
-                                            <%= link_to dataset[field_value][0], "#{ontology_link_generator "uberon", dataset[field_value][0]}", target: "_blank" %>
+                                            <td class="text-center">
+                                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <% for i in (0..dataset[field_value].length - 1)%>
+                                                        <li class="px-2 py-1">
+                                                            <%= link_to dataset[field_value][i], "#{ontology_link_generator "uberon", dataset[field_value][i]}", target: "_blank" %>
+                                                        </li>
+                                                    <%end%>
+                                                </ul>
+                                            </td>                                   
                                         <%when :developmental_stage_id %>
-                                            <% type =  dataset[field_value][0].split(":")[0].downcase %>
-                                            <%= link_to dataset[field_value][0], "#{ontology_link_generator type, dataset[field_value][0]}", target: "_blank" %>
+                                            <td class="text-center">
+                                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                    <% for i in (0..dataset[field_value].length - 1)%>
+                                                        <li class="px-2 py-1">
+                                                            <% type =  dataset[field_value][i].split(":")[0].downcase %>
+                                                            <%= link_to dataset[field_value][i], "#{ontology_link_generator type, dataset[field_value][i]}", target: "_blank" %>
+                                                        </li>
+                                                    <%end%>
+                                                </ul>
+                                            </td>                                     
                                         <%else%>
-                                            <%= dataset[field_value][0] %>
-                                    <%end%>
-                                </td>
+                                            <td class="text-center">
+                                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <% for i in (0..dataset[field_value].length - 1)%>
+                                                        <li class="px-2 py-1">
+                                                            <%= dataset[field_value][i] %>
+                                                        </li>
+                                                    <%end%>
+                                                </ul>
+                                            </td> 
+                                    <%end%>                                
+                                <%else%>
+                                    <% dataset[field_value].one? {|e| e.nil?} ? empty = true : empty = false %>
+                                    <td class="text-center <%= empty ? "bg-light": "" %>">
+                                        <%case field_value%>
+                                            <%when :tissue_uberon %>
+                                                <%= link_to dataset[field_value][0], "#{ontology_link_generator "uberon", dataset[field_value][0]}", target: "_blank" %>
+                                            <%when :developmental_stage_id %>
+                                                <% type =  dataset[field_value][0].split(":")[0].downcase %>
+                                                <%= link_to dataset[field_value][0], "#{ontology_link_generator type, dataset[field_value][0]}", target: "_blank" %>
+                                            <%else%>
+                                                <%= dataset[field_value][0] %>
+                                        <%end%>
+                                    </td>
+                                <%end%>
                             <%end%>
-                        <%end%>
-                </tr>
-            <%end%>
+                    </tr>
+                <%end%>
 
-                <tr>
-                    <th scope="row" class="px-3">Processed Data</th>
-                    <% @datasets.each do |dataset| %>
-                        <% if dataset[:processed_data].length > 1 %>
-                            <td class="text-center">
-                                <ul class="list-group list-group-flush">
-                                    <% for i in (0..dataset[:processed_data].length - 1) %>
-                                        <li class="list-group-item">
-                                            <% extension = dataset[:processed_data][i].split('.')[-1]%>
-                                            <%= link_to "Download .#{extension}", dataset[:processed_data][i], class: "btn btn-dark px-2 w-75 display-block" %>
-                                        </li>
-                                    <% end %>
-                                </ul>
+                    <tr>
+                        <th scope="row" class="px-3">Processed Data</th>
+                        <% @datasets.each do |dataset| %>
+                            <% if dataset[:processed_data].length > 1 %>
+                                <td class="text-center">
+                                    <ul class="list-group list-group-flush">
+                                        <% for i in (0..dataset[:processed_data].length - 1) %>
+                                            <li class="list-group-item">
+                                                <% extension = dataset[:processed_data][i].split('.')[-1]%>
+                                                <%= link_to "Download .#{extension}", dataset[:processed_data][i], class: "btn btn-dark px-2 w-75 display-block" %>
+                                            </li>
+                                        <% end %>
+                                    </ul>
+                                </td>
+                            <% else %>
+                                <% dataset[:processed_data].one? {|e| e.nil?} ? empty = true : empty = false %>
+                                    <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
+
+                                        <% empty ? '' : extension = dataset[:processed_data][0].split('.')[-1] %>
+                                        <%= empty ? '' : (link_to "Download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block") %>
+                                    </td>
+                            <% end %>
+                        <% end %>
+                    </tr>
+
+
+                    <tr>
+                        <th scope="row" class="px-3">Link to Dataset</th>
+                        <% @datasets.each do |dataset| %>
+                            <% dataset[:link_to_dataset].nil? ? empty = true : empty = false %>
+                            <td class="text-center <%= empty ? "bg-light" : "" %>">
+                                <%if !empty%>
+                                    <% uri = URI(dataset[:link_to_dataset])%>
+                                    <%= link_to "Go to #{uri.host}", dataset[:link_to_dataset], target: "_blank", class: "btn btn-warning px-2 display-block" %>
+                                <%end%>
                             </td>
-                        <% else %>
-                            <% dataset[:processed_data].one? {|e| e.nil?} ? empty = true : empty = false %>
+                        <% end %>
+                    </tr>
+
+                    <tr>
+                        <th scope="row" class="px-3">External resources</th>
+                        <% @datasets.each do |dataset| %>
+                            <% if dataset[:link_to_raw_data].length > 1 %>
+                                <td class="text-center">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <%= "#{dataset[:link_to_raw_data].length} external resources" %>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <% for i in (0..dataset[:link_to_raw_data].length - 1)%>
+                                            <li class="px-2 py-1">
+                                                <% uri = URI.parse(dataset[:link_to_raw_data][i]) %>
+                                            <%= link_to uri.host, dataset[:link_to_raw_data][i], target: "_blank" %>
+                                            </li>
+                                        <%end%>
+                                    </ul>
+                                </td> 
+                            <% else %>
+                                <% dataset[:link_to_raw_data].length == 0 ? empty = true : empty = false %>
+                                
                                 <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
-
-                                    <% empty ? '' : extension = dataset[:processed_data][0].split('.')[-1] %>
-                                    <%= empty ? '' : (link_to "Download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block") %>
+                                    <% empty ? "" : uri = URI(dataset[:link_to_raw_data][0]) %>
+                                    <%= empty ? '' : (link_to uri.host, dataset[:link_to_raw_data][0], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block") %>
                                 </td>
+                            <% end %>
                         <% end %>
-                    <% end %>
-                </tr>
-
-
-                <tr>
-                    <th scope="row" class="px-3">Link to Dataset</th>
-                    <% @datasets.each do |dataset| %>
-                        <% dataset[:link_to_dataset].nil? ? empty = true : empty = false %>
-                        <td class="text-center <%= empty ? "bg-light" : "" %>">
-                            <%if !empty%>
-                                <% uri = URI(dataset[:link_to_dataset])%>
-                                <%= link_to "Go to #{uri.host}", dataset[:link_to_dataset], target: "_blank", class: "btn btn-warning px-2 display-block" %>
-                            <%end%>
-                        </td>
-                    <% end %>
-                </tr>
-
-                <tr>
-                    <th scope="row" class="px-3">External resources</th>
-                    <% @datasets.each do |dataset| %>
-                        <% if dataset[:link_to_raw_data].length > 1 %>
-                            <td class="text-center">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <%= "#{dataset[:link_to_raw_data].length} external resources" %>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <% for i in (0..dataset[:link_to_raw_data].length - 1)%>
-                                        <li class="px-2 py-1">
-                                            <% uri = URI.parse(dataset[:link_to_raw_data][i]) %>
-                                           <%= link_to uri.host, dataset[:link_to_raw_data][i], target: "_blank" %>
-                                        </li>
-                                    <%end%>
-                                </ul>
-                            </td> 
-                        <% else %>
-                            <% dataset[:link_to_raw_data].length == 0 ? empty = true : empty = false %>
-                            
-                            <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
-                                <% empty ? "" : uri = URI(dataset[:link_to_raw_data][0]) %>
-                                <%= empty ? '' : (link_to uri.host, dataset[:link_to_raw_data][0], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block") %>
-                            </td>
-                        <% end %>
-                    <% end %>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
 </div>
