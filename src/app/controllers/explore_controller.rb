@@ -1,7 +1,19 @@
 class ExploreController < ApplicationController
   helper_method [:ontology_link_generator, :generate_url]
-  @@current_params = {
-    source: nil
+    @@current_params = {
+      source: "all",
+    }
+    @@current_array_params = {
+      number_of_cells: "all",
+      organisms: "all",
+      disease: "all",
+      assay_info: "all",
+      cell_types: "all",
+      sex: "all",
+      tissue: "all",
+      tissue_uberon: "all",
+      developmental_stage: "all",
+      developmental_stage_id: "all"
   }
 
   def show
@@ -15,26 +27,70 @@ class ExploreController < ApplicationController
 
     # Let ease the way to display some fields with a loop
     @fields = {
-      "Number of Cells": :number_of_cells,
-      "Organisms": :organisms,
-      "Disease": :disease,
-      "Assay Info": :assay_info,
-      "Cell Types": :cell_types,
-      "Sex": :sex,
-      "Tissue": :tissue,
-      "Tissue UBERON": :tissue_uberon,
-      "Developmental Stage": :developmental_stage,
-      "Developmental Stage ID": :developmental_stage_id,
-  }
+      "Number of Cells": {
+        name: :number_of_cells,
+        distinct_values: Dataset.distinct.pluck(:number_of_cells).flatten.uniq
+      },
+      "Organisms": {
+        name: :organisms,
+        distinct_values: Dataset.distinct.pluck(:organisms).flatten.uniq
+      },
+      "Disease": {
+        name: :disease,
+        distinct_values: Dataset.distinct.pluck(:disease).flatten.uniq
+      },
+      "Assay Info": {
+        name: :assay_info,
+        distinct_values: Dataset.distinct.pluck(:assay_info).flatten.uniq
+      },
+      "Cell Types": {
+        name: :cell_types,
+        distinct_values: Dataset.distinct.pluck(:cell_types).flatten.uniq
+      },
+      "Sex": {
+        name: :sex,
+        distinct_values: Dataset.distinct.pluck(:sex).flatten.uniq
+      },
+      "Tissue": {
+        name: :tissue,
+        distinct_values: Dataset.distinct.pluck(:tissue).flatten.uniq
+      },
+      "Tissue UBERON": {
+        name: :tissue_uberon,
+        distinct_values: Dataset.distinct.pluck(:tissue_uberon).flatten.uniq
+      },
+      "Developmental Stage": {
+        name: :developmental_stage,
+        distinct_values: Dataset.distinct.pluck(:developmental_stage).flatten.uniq
+      },
+      "Developmental Stage ID": {
+        name: :developmental_stage_id,
+        distinct_values: Dataset.distinct.pluck(:developmental_stage_id).flatten.uniq
+      }
+    }
+
 
     # Used to display the different possibilities of filters in the UI
     @sources = Dataset.distinct.pluck(:source)
 
+    if @@current_array_params.all? { |_, value| value == "all" }
+      @selected = @@current_params[:source] == "all" ? Dataset.all : Dataset.where(source: @@current_array_params[:source])
+    else
+      values = @@current_array_params.select { |_, value| value != "all" }
+      query_string = ""
+      values.each_with_index do |(key, value), index|
+        if index == values.length
+          break
+        end
+        query_string += "'#{value}' = ANY(#{key}) #{index == (values.length - 1) ? "" : "AND "}"
+      end
+      @selected = Dataset.where(query_string)
+      logger.info query_string
+    end
 
-    @source = @@current_params[:source]
-    @selected_source = @source == "all" ? Dataset.all : Dataset.where(source: @source)
-    @datasets = @selected_source.limit(@per_page).offset(offset)
-    @number_of_rows = @selected_source.count
+    @datasets = @selected.limit(@per_page).offset(offset)
+    @number_of_rows = @selected.count
+    logger.info "number of rows => #{@number_of_rows}"
   end
 
   def ontology_link_generator(type, id)
@@ -44,19 +100,16 @@ class ExploreController < ApplicationController
   end
 
   def generate_url(page)
-    url = "#{explore_path(page)}?"
-    @@current_params.each do |key, value|
-        url += "#{key}=#{value}"
-    end
+    url = "#{explore_path(page, @@current_array_params)}"
     return url
   end
 
   def update_current_params
-    @@current_params.each do |key, value|
+    @@current_array_params.each do |key, value|
       if value == params[key]
         next
       else
-        @@current_params[key] = params[key]
+        @@current_array_params[key] = params[key]
       end
     end
   end

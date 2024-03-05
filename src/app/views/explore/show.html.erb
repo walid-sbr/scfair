@@ -44,7 +44,6 @@
                                     </option>                                
                                 <%end%>
                             </select>
-
                         </th>
                             <% @datasets.each do |dataset|%>
                                 <td class="text-center"><%= link_to dataset[:source], 'https://cellxgene.cziscience.com/', target: "_blank" %></td>
@@ -59,21 +58,31 @@
                             <%end%>
                     </tr>
 
-                <% @fields.each do |field_name, field_value| %>
+                <% @fields.each do |field_name, field_hash| %>
                     <tr>
-                        <th scope="row" class="px-3"><%= field_name %></th>
+                        <th scope="row" class="px-3">
+                            <p><%= field_name %></p>
+                            <select name="<%= field_hash[:name] %>" class="form-select w-50" onchange="this.form.submit()">
+                                <option value="all" <%= 'selected' if params[field_hash[:name]] == "all" %>>All</option>
+                                <% field_hash[:distinct_values].each do |value| %>
+                                    <option value="<%= value %>" <%= 'selected' if params[field_hash[:name]] == value %>>
+                                        <%= value %>
+                                    </option>                                
+                                <%end%>
+                            </select>
+                        </th>
                             <% @datasets.each do |dataset|%>
-                                <% if dataset[field_value].length > 1 %>
-                                    <%case field_value%>
+                                <% if dataset[field_hash[:name]].length > 1 %>
+                                    <%case field_hash[:name]%>
                                         <%when :tissue_uberon %>
                                             <td class="text-center">
                                                 <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
+                                                    <%= "#{dataset[field_hash[:name]].length} #{field_name.to_s.downcase.pluralize}" %>
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    <% for i in (0..dataset[field_value].length - 1)%>
+                                                    <% for i in (0..dataset[field_hash[:name]].length - 1)%>
                                                         <li class="px-2 py-1">
-                                                            <%= link_to dataset[field_value][i], "#{ontology_link_generator "uberon", dataset[field_value][i]}", target: "_blank" %>
+                                                            <%= link_to dataset[field_hash[:name]][i], "#{ontology_link_generator "uberon", dataset[field_hash[:name]][i]}", target: "_blank" %>
                                                         </li>
                                                     <%end%>
                                                 </ul>
@@ -81,13 +90,13 @@
                                         <%when :developmental_stage_id %>
                                             <td class="text-center">
                                                 <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
+                                                    <%= "#{dataset[field_hash[:name]].length} #{field_name.to_s.downcase.pluralize}" %>
                                                 </button>
                                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                    <% for i in (0..dataset[field_value].length - 1)%>
+                                                    <% for i in (0..dataset[field_hash[:name]].length - 1)%>
                                                         <li class="px-2 py-1">
-                                                            <% type =  dataset[field_value][i].split(":")[0].downcase %>
-                                                            <%= link_to dataset[field_value][i], "#{ontology_link_generator type, dataset[field_value][i]}", target: "_blank" %>
+                                                            <% type =  dataset[field_hash[:name]][i].split(":")[0].downcase %>
+                                                            <%= link_to dataset[field_hash[:name]][i], "#{ontology_link_generator type, dataset[field_hash[:name]][i]}", target: "_blank" %>
                                                         </li>
                                                     <%end%>
                                                 </ul>
@@ -95,28 +104,28 @@
                                         <%else%>
                                             <td class="text-center">
                                                 <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <%= "#{dataset[field_value].length} #{field_name.to_s.downcase.pluralize}" %>
+                                                    <%= "#{dataset[field_hash[:name]].length} #{field_name.to_s.downcase.pluralize}" %>
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    <% for i in (0..dataset[field_value].length - 1)%>
+                                                    <% for i in (0..dataset[field_hash[:name]].length - 1)%>
                                                         <li class="px-2 py-1">
-                                                            <%= dataset[field_value][i] %>
+                                                            <%= dataset[field_hash[:name]][i] %>
                                                         </li>
                                                     <%end%>
                                                 </ul>
                                             </td> 
                                     <%end%>                                
                                 <%else%>
-                                    <% dataset[field_value].one? {|e| e.nil?} ? empty = true : empty = false %>
+                                    <% dataset[field_hash[:name]].one? {|e| e.nil?} ? empty = true : empty = false %>
                                     <td class="text-center <%= empty ? "bg-light": "" %>">
-                                        <%case field_value%>
+                                        <%case field_hash[:name]%>
                                             <%when :tissue_uberon %>
-                                                <%= link_to dataset[field_value][0], "#{ontology_link_generator "uberon", dataset[field_value][0]}", target: "_blank" %>
+                                                <%= link_to dataset[field_hash[:name]][0], "#{ontology_link_generator "uberon", dataset[field_hash[:name]][0]}", target: "_blank" %>
                                             <%when :developmental_stage_id %>
-                                                <% type =  dataset[field_value][0].split(":")[0].downcase %>
-                                                <%= link_to dataset[field_value][0], "#{ontology_link_generator type, dataset[field_value][0]}", target: "_blank" %>
+                                                <% type =  dataset[field_hash[:name]][0].split(":")[0].downcase %>
+                                                <%= link_to dataset[field_hash[:name]][0], "#{ontology_link_generator type, dataset[field_hash[:name]][0]}", target: "_blank" %>
                                             <%else%>
-                                                <%= dataset[field_value][0] %>
+                                                <%= dataset[field_hash[:name]][0] %>
                                         <%end%>
                                     </td>
                                 <%end%>
