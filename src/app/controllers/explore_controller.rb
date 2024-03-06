@@ -4,7 +4,6 @@ class ExploreController < ApplicationController
       source: "all",
     }
     @@current_array_params = {
-      number_of_cells: "all",
       organisms: "all",
       disease: "all",
       assay_info: "all",
@@ -90,7 +89,6 @@ class ExploreController < ApplicationController
 
     @datasets = @selected.limit(@per_page).offset(offset)
     @number_of_rows = @selected.count
-    logger.info "number of rows => #{@number_of_rows}"
   end
 
   def ontology_link_generator(type, id)

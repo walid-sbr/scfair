@@ -62,14 +62,17 @@
                     <tr>
                         <th scope="row" class="px-3">
                             <p><%= field_name %></p>
-                            <select name="<%= field_hash[:name] %>" class="form-select w-50" onchange="this.form.submit()">
-                                <option value="all" <%= 'selected' if params[field_hash[:name]] == "all" %>>All</option>
-                                <% field_hash[:distinct_values].each do |value| %>
-                                    <option value="<%= value %>" <%= 'selected' if params[field_hash[:name]] == value %>>
-                                        <%= value %>
-                                    </option>                                
-                                <%end%>
-                            </select>
+                            <% excluded = [:number_of_cells] %>
+                            <% if !excluded.include? field_hash[:name] %>
+                                <select name="<%= field_hash[:name] %>" class="form-select w-50" onchange="this.form.submit()">
+                                    <option value="all" <%= 'selected' if params[field_hash[:name]] == "all" %>>All</option>
+                                    <% field_hash[:distinct_values].each do |value| %>
+                                        <option value="<%= value %>" <%= 'selected' if params[field_hash[:name]] == value %>>
+                                            <%= value %>
+                                        </option>                                
+                                    <%end%>
+                                </select>
+                            <%end%>
                         </th>
                             <% @datasets.each do |dataset|%>
                                 <% if dataset[field_hash[:name]].length > 1 %>
