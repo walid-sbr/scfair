@@ -26,17 +26,10 @@
             <table class="table table-striped-columns align-middle table-bordered">
                 <thead>
                     <tr>
-                        <th class="px-3 table-min-w">Dataset ID</th>
-                        <% @datasets.each do |dataset| %>
-                            <th class="text-center table-min-w"><%= dataset[:id] %></th>
-                        <%end%>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    <tr>
-                        <th class="d-flex justify-content-between" scope="row" class="px-3">
-                            <p>Source</p>
-                            <select name="source" class="form-select w-50" onchange="this.form.submit()">
+                        <!-- SOURCE TABLE HEADER -->
+                        <th scope="col" style="min-width: 300px">
+                            <p class="text-center">Source</p>
+                            <select name="source" class="form-select" onchange="this.form.submit()">
                                 <option value="all" <%= 'selected' if params[:source].nil? %> >All</option>
                                 <% @sources.each do |source| %>
                                     <option value="<%= source %>" <%= 'selected' if params[:source] == source %>>
@@ -45,36 +38,48 @@
                                 <%end%>
                             </select>
                         </th>
-                            <% @datasets.each do |dataset|%>
-                                <td class="text-center"><%= link_to dataset[:source], 'https://cellxgene.cziscience.com/', target: "_blank" %></td>
-                            <%end%>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="px-3">DOI</th>
-                            <% @datasets.each do |dataset|%>
-                                <td class="text-center <%= dataset[:doi].nil? ? 'bg-light' : '' %> ">
-                                    <%= dataset[:doi].nil? ? "" : (link_to dataset[:doi], "https://dx.doi.org/#{dataset[:doi]}", target: "_blank")  %>
-                                </td>
-                            <%end%>
-                    </tr>
 
-                <% @fields.each do |field_name, field_hash| %>
-                    <tr>
-                        <th scope="row" class="px-3">
-                            <p><%= field_name %></p>
-                            <% excluded = [:number_of_cells] %>
-                            <% if !excluded.include? field_hash[:name] %>
-                                <select name="<%= field_hash[:name] %>" class="form-select w-50" onchange="this.form.submit()">
-                                    <option value="all" <%= 'selected' if params[field_hash[:name]] == "all" %>>All</option>
-                                    <% field_hash[:distinct_values].each do |value| %>
-                                        <option value="<%= value %>" <%= 'selected' if params[field_hash[:name]] == value %>>
-                                            <%= value %>
-                                        </option>                                
-                                    <%end%>
-                                </select>
-                            <%end%>
-                        </th>
-                            <% @datasets.each do |dataset|%>
+                        <!-- DOI TABLE HEADER -->
+                        <th scope="col" class="text-center" style="min-width: 300px">DOI</th>
+
+                        <!-- FIELDS TABLE HEADER -->
+                        <% @fields.each do |field_name, field_hash| %>
+                            <th scope="col" style="min-width: 300px">
+                                <p class="text-center"><%= field_name %></p>
+                                <% excluded = [:number_of_cells] %>
+                                <% if !excluded.include? field_hash[:name] %>
+                                    <select name="<%= field_hash[:name] %>" class="form-select" onchange="this.form.submit()">
+                                        <option value="all" <%= 'selected' if params[field_hash[:name]] == "all" %>>All</option>
+                                        <% field_hash[:distinct_values].each do |value| %>
+                                            <option value="<%= value %>" <%= 'selected' if params[field_hash[:name]] == value %>>
+                                                <%= value %>
+                                            </option>                                
+                                        <%end%>
+                                    </select>
+                                <%end%>
+                            </th>
+                        <%end%>
+
+                        <!-- PROCESSED DATA TABLE HEADER -->
+                        <th scope="col" class="text-center" style="min-width: 300px">Processed Data</th>
+
+                        <!-- LINK TO DATASET TABLE HEADER -->
+                        <th scope="col" class="text-center" style="min-width: 300px">Link to Dataset</th>
+
+                        <!-- EXTERNAL RESOURCES TABLE HEADER -->
+                        <th scope="col" class="text-center" style="min-width: 300px">External resources</th>
+
+                    </tr>
+                </thead>
+
+                <tbody class="table-group-divider">
+                    <% @datasets.each do |dataset|%>
+                        <tr>
+                            <td class="text-center"><%= link_to dataset[:source], 'https://cellxgene.cziscience.com/', target: "_blank" %></td>
+                            <td class="text-center <%= dataset[:doi].nil? ? 'bg-light' : '' %> ">
+                                <%= dataset[:doi].nil? ? "" : (link_to dataset[:doi], "https://dx.doi.org/#{dataset[:doi]}", target: "_blank")  %>
+                            </td>
+                            <% @fields.each do |field_name, field_hash| %>
                                 <% if dataset[field_hash[:name]].length > 1 %>
                                     <%case field_hash[:name]%>
                                         <%when :tissue_uberon %>
@@ -133,12 +138,7 @@
                                     </td>
                                 <%end%>
                             <%end%>
-                    </tr>
-                <%end%>
 
-                    <tr>
-                        <th scope="row" class="px-3">Processed Data</th>
-                        <% @datasets.each do |dataset| %>
                             <% if dataset[:processed_data].length > 1 %>
                                 <td class="text-center">
                                     <ul class="list-group list-group-flush">
@@ -158,26 +158,15 @@
                                         <%= empty ? '' : (link_to "Download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block") %>
                                     </td>
                             <% end %>
-                        <% end %>
-                    </tr>
 
-
-                    <tr>
-                        <th scope="row" class="px-3">Link to Dataset</th>
-                        <% @datasets.each do |dataset| %>
                             <% dataset[:link_to_dataset].nil? ? empty = true : empty = false %>
-                            <td class="text-center <%= empty ? "bg-light" : "" %>">
-                                <%if !empty%>
-                                    <% uri = URI(dataset[:link_to_dataset])%>
-                                    <%= link_to "Go to #{uri.host}", dataset[:link_to_dataset], target: "_blank", class: "btn btn-warning px-2 display-block" %>
-                                <%end%>
-                            </td>
-                        <% end %>
-                    </tr>
+                                <td class="text-center <%= empty ? "bg-light" : "" %>">
+                                    <%if !empty%>
+                                        <% uri = URI(dataset[:link_to_dataset])%>
+                                        <%= link_to "Go to #{uri.host}", dataset[:link_to_dataset], target: "_blank", class: "btn btn-warning px-2 display-block" %>
+                                    <%end%>
+                                </td>
 
-                    <tr>
-                        <th scope="row" class="px-3">External resources</th>
-                        <% @datasets.each do |dataset| %>
                             <% if dataset[:link_to_raw_data].length > 1 %>
                                 <td class="text-center">
                                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -200,8 +189,9 @@
                                     <%= empty ? '' : (link_to uri.host, dataset[:link_to_raw_data][0], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block") %>
                                 </td>
                             <% end %>
-                        <% end %>
-                    </tr>
+
+                        </tr>
+                    <%end%>
                 </tbody>
             </table>
         </div>

@@ -21,7 +21,7 @@ class ExploreController < ApplicationController
 
     # pages handling
     @page_number = params[:page].to_i || 1
-    @per_page = 5
+    @per_page = 50
     offset = (@page_number - 1) * @per_page
 
     # Let ease the way to display some fields with a loop
@@ -73,6 +73,7 @@ class ExploreController < ApplicationController
     @sources = Dataset.distinct.pluck(:source)
 
     if @@current_array_params.all? { |_, value| value == "all" }
+      logger.info Dataset.all.count
       @selected = @@current_params[:source] == "all" ? Dataset.all : Dataset.where(source: @@current_array_params[:source])
     else
       values = @@current_array_params.select { |_, value| value != "all" }
