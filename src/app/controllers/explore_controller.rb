@@ -18,6 +18,7 @@ class ExploreController < ApplicationController
   def show
     # update current parameters
     update_current_params
+    update_params
 
     # pages handling
     @page_number = params[:page].to_i || 1
@@ -73,10 +74,10 @@ class ExploreController < ApplicationController
     @sources = Dataset.distinct.pluck(:source)
 
     if @@current_array_params.all? { |_, value| value == "all" }
-      logger.info Dataset.all.count
-      @selected = @@current_params[:source] == "all" ? Dataset.all : Dataset.where(source: @@current_array_params[:source])
+      @selected = @@current_params[:source] == "all" ? Dataset.all : Dataset.where(source: @@current_params[:source])
     else
       values = @@current_array_params.select { |_, value| value != "all" }
+      logger.info @@current_array_params
       query_string = ""
       values.each_with_index do |(key, value), index|
         if index == values.length
@@ -84,8 +85,8 @@ class ExploreController < ApplicationController
         end
         query_string += "'#{value}' = ANY(#{key}) #{index == (values.length - 1) ? "" : "AND "}"
       end
-      @selected = Dataset.where(query_string)
-      logger.info query_string
+      @base = @@current_params[:source] == "all" ? Dataset.all : Dataset.where(source: @@current_params[:source])
+      @selected = @base.where(query_string)
     end
 
     @datasets = @selected.limit(@per_page).offset(offset)
@@ -105,10 +106,24 @@ class ExploreController < ApplicationController
 
   def update_current_params
     @@current_array_params.each do |key, value|
-      if value == params[key]
+      if (value == params[key])
         next
+      elsif params[key].nil?
+        @@current_array_params[key] = "all"
       else
         @@current_array_params[key] = params[key]
+      end
+    end
+  end
+
+  def update_params
+    @@current_params.each do |key, value|
+      if (value == params[key])
+        next
+      elsif params[key].nil?
+        @@current_params[key] = "all"
+      else
+        @@current_params[key] = params[key]
       end
     end
   end
