@@ -83,7 +83,8 @@ class ExploreController < ApplicationController
         if index == values.length
           break
         end
-        query_string += "'#{value}' = ANY(#{key}) #{index == (values.length - 1) ? "" : "AND "}"
+        parsed_value = value.gsub("'", "''")
+        query_string += "'#{parsed_value}' = ANY(#{key}) #{index == (values.length - 1) ? "" : "AND "}"
       end
       @base = @@current_params[:source] == "all" ? Dataset.all : Dataset.where(source: @@current_params[:source])
       @selected = @base.where(query_string)
