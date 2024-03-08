@@ -80,7 +80,7 @@
                     <% @datasets.each_with_index do |dataset, index|%>
                         <tr>
                             <td class="text-center"><%= index + 1 %></td>
-                            <td class="text-center"><%= link_to dataset[:source], 'https://cellxgene.cziscience.com/', target: "_blank" %></td>
+                            <td class="text-center"><%= link_to dataset[:source], @sources_link[dataset[:source].to_sym], target: "_blank" %></td>
                             <td class="text-center <%= dataset[:doi].nil? ? 'bg-light' : '' %> ">
                                 <%= dataset[:doi].nil? ? "" : (link_to dataset[:doi], "https://dx.doi.org/#{dataset[:doi]}", target: "_blank")  %>
                             </td>

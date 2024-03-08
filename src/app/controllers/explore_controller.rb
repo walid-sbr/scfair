@@ -25,6 +25,12 @@ class ExploreController < ApplicationController
     @per_page = 50
     offset = (@page_number - 1) * @per_page
 
+    # Hash of source sites links
+    @sources_link = {
+      "CELLxGENE": 'https://cellxgene.cziscience.com/',
+      "BGEE": "https://www.bgee.org/"
+    }
+
     # Let ease the way to display some fields with a loop
     @fields = {
       "Number of Cells": {
