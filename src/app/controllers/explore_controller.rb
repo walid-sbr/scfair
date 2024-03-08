@@ -37,7 +37,7 @@ class ExploreController < ApplicationController
         name: :number_of_cells,
         distinct_values: Dataset.distinct.pluck(:number_of_cells).flatten.uniq
       },
-      "Organisms": {
+      "Species": {
         name: :organisms,
         distinct_values: Dataset.distinct.pluck(:organisms).flatten.uniq
       },
@@ -45,11 +45,11 @@ class ExploreController < ApplicationController
         name: :disease,
         distinct_values: Dataset.distinct.pluck(:disease).flatten.uniq
       },
-      "Assay Info": {
+      "Assays": {
         name: :assay_info,
         distinct_values: Dataset.distinct.pluck(:assay_info).flatten.uniq
       },
-      "Cell Types": {
+      "Cell Type": {
         name: :cell_types,
         distinct_values: Dataset.distinct.pluck(:cell_types).flatten.uniq
       },
@@ -61,7 +61,7 @@ class ExploreController < ApplicationController
         name: :tissue,
         distinct_values: Dataset.distinct.pluck(:tissue).flatten.uniq
       },
-      "Tissue UBERON": {
+      "Tissue ID": {
         name: :tissue_uberon,
         distinct_values: Dataset.distinct.pluck(:tissue_uberon).flatten.uniq
       },
