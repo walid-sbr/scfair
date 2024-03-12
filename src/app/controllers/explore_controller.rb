@@ -35,43 +35,43 @@ class ExploreController < ApplicationController
     @fields = {
       "Number of Cells": {
         name: :number_of_cells,
-        distinct_values: Dataset.distinct.pluck(:number_of_cells).flatten.uniq
+        distinct_values: nil
       },
       "Species": {
         name: :organisms,
-        distinct_values: Dataset.distinct.pluck(:organisms).flatten.uniq
+        distinct_values: Dataset.distinct.pluck(:organisms).flatten.uniq.sort{|a,b| a.downcase <=> b.downcase}
       },
       "Disease": {
         name: :disease,
-        distinct_values: Dataset.distinct.pluck(:disease).flatten.uniq
+        distinct_values: Dataset.distinct.pluck(:disease).flatten.uniq.sort{|a,b| a.downcase <=> b.downcase}
       },
       "Assays": {
         name: :assay_info,
-        distinct_values: Dataset.distinct.pluck(:assay_info).flatten.uniq
+        distinct_values: Dataset.distinct.pluck(:assay_info).flatten.uniq.sort{|a,b| a.downcase <=> b.downcase}
       },
       "Cell Type": {
         name: :cell_types,
-        distinct_values: Dataset.distinct.pluck(:cell_types).flatten.uniq
+        distinct_values: Dataset.distinct.pluck(:cell_types).flatten.uniq.sort{|a,b| a.downcase <=> b.downcase}
       },
       "Sex": {
         name: :sex,
-        distinct_values: Dataset.distinct.pluck(:sex).flatten.uniq
+        distinct_values: Dataset.distinct.pluck(:sex).flatten.uniq.sort{|a,b| a.downcase <=> b.downcase}
       },
       "Tissue": {
         name: :tissue,
-        distinct_values: Dataset.distinct.pluck(:tissue).flatten.uniq
+        distinct_values: Dataset.distinct.pluck(:tissue).flatten.uniq.sort{|a,b| a.downcase <=> b.downcase}
       },
       "Tissue ID": {
         name: :tissue_uberon,
-        distinct_values: Dataset.distinct.pluck(:tissue_uberon).flatten.uniq
+        distinct_values: Dataset.distinct.pluck(:tissue_uberon).flatten.uniq.sort{|a,b| a.downcase <=> b.downcase}
       },
       "Developmental Stage": {
         name: :developmental_stage,
-        distinct_values: Dataset.distinct.pluck(:developmental_stage).flatten.uniq
+        distinct_values: Dataset.distinct.pluck(:developmental_stage).flatten.uniq.sort{|a,b| a.downcase <=> b.downcase}
       },
       "Developmental Stage ID": {
         name: :developmental_stage_id,
-        distinct_values: Dataset.distinct.pluck(:developmental_stage_id).flatten.uniq
+        distinct_values: Dataset.distinct.pluck(:developmental_stage_id).flatten.uniq.sort{|a,b| a.downcase <=> b.downcase}
       }
     }
 
