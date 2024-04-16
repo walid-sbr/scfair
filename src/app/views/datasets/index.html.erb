@@ -1,0 +1,37 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Datasets</h1>
+
+<!-- <div id="datasets">
+  <% @datasets.each do |dataset| %>
+    <%= render dataset %>
+    <p>
+      <%= link_to "Show this dataset", dataset %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New dataset", new_dataset_path %> -->
+
+<table id = "datasets">
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>doi</th>
+      <th>cell-type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @datasets.each do |dataset| %>
+      <tr>
+        <td><%= dataset.id %></td>
+        <td><%= dataset.doi %></td>
+        <td><%= dataset.cell_types.join(" ") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= javascript_tag do %>
+  $("#datasets").DataTable()
+<% end %>
