@@ -23,7 +23,7 @@
     </div>
     <form action="<%= generate_url 1 %>" method="get">
         <div class="table-responsive">
-            <table class="table table-striped-columns align-middle table-bordered">
+            <table id = "datasets" class="table table-striped-columns align-middle table-bordered">
                 <thead>
                     <tr>
                         <!-- ROW NUMBER -->
@@ -212,3 +212,7 @@
         </div>
     <%end%>
 </div>
+
+<%= javascript_tag do %>
+  $("#datasets").DataTable()
+<% end %>
