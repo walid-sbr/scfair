@@ -20,7 +20,7 @@ class BGEE_API
   def changed?(json)
     stringified = JSON.generate(json)
     hash = Digest::SHA256.hexdigest(stringified)
-    dataset = Dataset.find_by dataset_id: json[:dataset_id]
+    dataset = Dataset.find_by dataset_id: json[0][:dataset_id]
     if dataset.nil? || (dataset[:dataset_hash] != hash)
       @data[:dataset_hash] = hash
       return true
@@ -53,43 +53,43 @@ class BGEE_API
 
         collection = JSON.parse(req, { symbolize_names: true })
 
-        # Diving in datasets
-        collection[:data][:assays].each do |dataset|
+        @data = {
+          collection_id: nil,
+          dataset_id: nil,
+          source: nil,
+          doi: nil,
+          dataset_hash: nil,
+          number_of_cells: [],
+          organisms: [],
+          disease: [],
+          assay_info: [],
+          processed_data: [],
+          link_to_dataset: [],
+          link_to_explore_data: [],
+          link_to_raw_data: [],
+          cell_types: [],
+          tissue: [],
+          tissue_uberon: [],
+          developmental_stage: [],
+          developmental_stage_id: [],
+          sex: [],
+      }
 
-          @data = {
-              collection_id: nil,
-              dataset_id: nil,
-              source: nil,
-              doi: nil,
-              dataset_hash: nil,
-              number_of_cells: [],
-              organisms: [],
-              disease: [],
-              assay_info: [],
-              processed_data: [],
-              link_to_dataset: [],
-              link_to_explore_data: [],
-              link_to_raw_data: [],
-              cell_types: [],
-              tissue: [],
-              tissue_uberon: [],
-              developmental_stage: [],
-              developmental_stage_id: [],
-              sex: [],
-          }
+        if changed? collection[:data][:assays]
 
-          if changed? dataset
+          # Diving in datasets
+          collection[:data][:assays].each do |dataset|
 
             @data[:collection_id] = dataset[:library][:experiment][:xRef][:xRefId]
             @data[:link_to_dataset] = nil
             @data[:source] = @@SOURCE
             @data[:doi] = nil
+            @data[:number_of_cells] << nil
 
             @data[:link_to_raw_data] << dataset[:library][:experiment][:xRef][:xRefURL]
 
             @data[:dataset_id] = dataset[:library][:id]
             @data[:link_to_explore_data] = nil
-            @data[:number_of_cells] << collection[:data][:assays].length
             @data[:cell_types] << dataset[:annotation][:rawDataCondition][:cellType][:name]
             @data[:tissue] << dataset[:annotation][:rawDataCondition][:anatEntity][:name]
             @data[:tissue_uberon] << dataset[:annotation][:rawDataCondition][:anatEntity][:id]
@@ -99,15 +99,14 @@ class BGEE_API
             @data[:organisms] << dataset[:annotation][:rawDataCondition][:species][:name]
             @data[:disease] << 'normal' # always normal for Bgee according to discussions
             @data[:assay_info] << dataset[:library][:technology][:protocolName]
-            @data[:processed_data] << dataset[:library][:experiment][:downloadURL]
+            @data[:processed_data] << dataset[:library][:experiment][:downloadUrl]
 
-            # UPDATE table with datasets
-            add_to_db
-          else
-            puts 'does not change'
           end
+          add_to_db
+        else
+          puts 'does not change'
         end
+      end
     end
-  end
 
-end
+  end

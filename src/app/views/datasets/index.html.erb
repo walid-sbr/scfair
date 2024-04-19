@@ -50,17 +50,17 @@
                     <%= dataset[:doi].nil? ? "" : (link_to dataset[:doi], "https://dx.doi.org/#{dataset[:doi]}", target: "_blank")  %>
                 </td>
                 <% @fields.each do |field_name, field_hash| %>
-                    <% if dataset[field_hash[:name]].length > 1 %>
+                    <% if dataset[field_hash[:name]].uniq.length > 1 %>
                         <%case field_hash[:name]%>
                             <%when :tissue_uberon %>
                                 <td class="text-center">
                                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <%= "#{dataset[field_hash[:name]].length} #{field_name.to_s.downcase.pluralize}" %>
+                                        <%= "#{dataset[field_hash[:name]].uniq.length} #{field_name.to_s.downcase.pluralize}" %>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <% for i in (0..dataset[field_hash[:name]].length - 1)%>
+                                        <% for i in (0..dataset[field_hash[:name]].uniq.length - 1)%>
                                             <li class="px-2 py-1">
-                                                <%= link_to dataset[field_hash[:name]][i], "#{ontology_link_generator "uberon", dataset[field_hash[:name]][i]}", target: "_blank" %>
+                                                <%= link_to dataset[field_hash[:name]].uniq[i], "#{ontology_link_generator "uberon", dataset[field_hash[:name]][i]}", target: "_blank" %>
                                             </li>
                                         <%end%>
                                     </ul>
@@ -68,13 +68,13 @@
                             <%when :developmental_stage_id %>
                                 <td class="text-center">
                                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <%= "#{dataset[field_hash[:name]].length} #{field_name.to_s.downcase.pluralize}" %>
+                                        <%= "#{dataset[field_hash[:name]].uniq.length} #{field_name.to_s.downcase.pluralize}" %>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <% for i in (0..dataset[field_hash[:name]].length - 1)%>
+                                        <% for i in (0..dataset[field_hash[:name]].uniq.length - 1)%>
                                             <li class="px-2 py-1">
-                                                <% type =  dataset[field_hash[:name]][i].split(":")[0].downcase %>
-                                                <%= link_to dataset[field_hash[:name]][i], "#{ontology_link_generator type, dataset[field_hash[:name]][i]}", target: "_blank" %>
+                                                <% type =  dataset[field_hash[:name]].uniq[i].split(":")[0].downcase %>
+                                                <%= link_to dataset[field_hash[:name]].uniq[i], "#{ontology_link_generator type, dataset[field_hash[:name]][i]}", target: "_blank" %>
                                             </li>
                                         <%end%>
                                     </ul>
@@ -82,12 +82,12 @@
                             <%else%>
                                 <td class="text-center">
                                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <%= "#{dataset[field_hash[:name]].length} #{field_name.to_s.downcase.pluralize}" %>
+                                        <%= "#{dataset[field_hash[:name]].uniq.length} #{field_name.to_s.downcase.pluralize}" %>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <% for i in (0..dataset[field_hash[:name]].length - 1)%>
+                                        <% for i in (0..dataset[field_hash[:name]].uniq.length - 1)%>
                                             <li class="px-2 py-1">
-                                                <%= dataset[field_hash[:name]][i] %>
+                                                <%= dataset[field_hash[:name]].uniq[i] %>
                                             </li>
                                         <%end%>
                                     </ul>
@@ -109,13 +109,13 @@
                     <%end%>
                 <%end%>
 
-                <% if dataset[:processed_data].length > 1 %>
+                <% if dataset[:processed_data].uniq.length > 1 %>
                     <td class="text-center">
                         <ul class="list-group list-group-flush">
-                            <% for i in (0..dataset[:processed_data].length - 1) %>
+                            <% for i in (0..dataset[:processed_data].uniq.length - 1) %>
                                 <li class="list-group-item">
-                                    <% extension = dataset[:processed_data][i].split('.')[-1]%>
-                                    <%= link_to "Download .#{extension}", dataset[:processed_data][i], class: "btn btn-dark px-2 w-75 display-block" %>
+                                    <% extension = dataset[:processed_data].uniq[i].split('.')[-1]%>
+                                    <%= link_to "Download .#{extension}", dataset[:processed_data].uniq[i], class: "btn btn-dark px-2 w-75 display-block" %>
                                 </li>
                             <% end %>
                         </ul>
@@ -132,20 +132,20 @@
                 <% dataset[:link_to_dataset].nil? ? empty = true : empty = false %>
                     <td class="text-center <%= empty ? "bg-light" : "" %>">
                         <%if !empty%>
-                            <%= link_to "Go to #{dataset[:source]} dataset", dataset[:link_to_dataset], target: "_blank", class: "btn btn-warning px-2 display-block" %>
+                            <%= link_to "Go to #{dataset[:source]} dataset", dataset[:link_to_dataset].uniq, target: "_blank", class: "btn btn-warning px-2 display-block" %>
                         <%end%>
                     </td>
 
-                <% if dataset[:link_to_raw_data].length > 1 %>
+                <% if dataset[:link_to_raw_data].uniq.length > 1 %>
                     <td class="text-center">
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <%= "#{dataset[:link_to_raw_data].length} external resources" %>
+                            <%= "#{dataset[:link_to_raw_data].uniq.length} external resources" %>
                         </button>
                         <ul class="dropdown-menu">
-                            <% for i in (0..dataset[:link_to_raw_data].length - 1)%>
+                            <% for i in (0..dataset[:link_to_raw_data].uniq.length - 1)%>
                                 <li class="px-2 py-1">
-                                    <% uri = URI.parse(dataset[:link_to_raw_data][i]) %>
-                                <%= link_to uri.host, dataset[:link_to_raw_data][i], target: "_blank" %>
+                                    <% uri = URI.parse(dataset[:link_to_raw_data].uniq[i]) %>
+                                <%= link_to uri.host, dataset[:link_to_raw_data].uniq[i], target: "_blank" %>
                                 </li>
                             <%end%>
                         </ul>
@@ -154,8 +154,8 @@
                     <% dataset[:link_to_raw_data].length == 0 ? empty = true : empty = false %>
                     
                     <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
-                        <% empty ? "" : uri = URI(dataset[:link_to_raw_data][0]) %>
-                        <%= empty ? '' : (link_to uri.host, dataset[:link_to_raw_data][0], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block") %>
+                        <% empty ? "" : uri = URI(dataset[:link_to_raw_data].uniq[0]) %>
+                        <%= empty ? '' : (link_to uri.host, dataset[:link_to_raw_data].uniq[0], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block") %>
                     </td>
                 <% end %>
 

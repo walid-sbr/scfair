@@ -4,7 +4,6 @@ class DatasetsController < ApplicationController
 
   # GET /datasets or /datasets.json
   def index
-
     # Hash of source sites links
     @sources_link = {
       "CELLxGENE": 'https://cellxgene.cziscience.com/',
