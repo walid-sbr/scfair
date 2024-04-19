@@ -132,7 +132,7 @@
                 <% dataset[:link_to_dataset].nil? ? empty = true : empty = false %>
                     <td class="text-center <%= empty ? "bg-light" : "" %>">
                         <%if !empty%>
-                            <%= link_to "Go to #{dataset[:source]} dataset", dataset[:link_to_dataset].uniq, target: "_blank", class: "btn btn-warning px-2 display-block" %>
+                            <%= link_to "Go to #{dataset[:source]} dataset", dataset[:link_to_dataset], target: "_blank", class: "btn btn-warning px-2 display-block" %>
                         <%end%>
                     </td>
 
