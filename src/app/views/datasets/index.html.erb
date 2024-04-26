@@ -94,18 +94,23 @@
                                 </td> 
                         <%end%>                                
                     <%else%>
-                        <% dataset[field_hash[:name]].one? {|e| e.nil?} ? empty = true : empty = false %>
-                        <td class="text-center <%= empty ? "bg-light": "" %>">
-                            <%case field_hash[:name]%>
-                                <%when :tissue_uberon %>
-                                    <%= link_to dataset[field_hash[:name]][0], "#{ontology_link_generator "uberon", dataset[field_hash[:name]][0]}", target: "_blank" %>
-                                <%when :developmental_stage_id %>
-                                    <% type =  dataset[field_hash[:name]][0].split(":")[0].downcase %>
-                                    <%= link_to dataset[field_hash[:name]][0], "#{ontology_link_generator type, dataset[field_hash[:name]][0]}", target: "_blank" %>
-                                <%else%>
-                                    <%= dataset[field_hash[:name]][0] %>
-                            <%end%>
-                        </td>
+                        <% if !(dataset[field_hash[:name]].uniq.length == 0) %>
+                            <% dataset[field_hash[:name]].one? {|e| e.nil?} ? empty = true : empty = false %>
+                            <td class="text-center <%= empty ? "bg-light": "" %>">
+                                <%case field_hash[:name]%>
+                                    <%when :tissue_uberon %>
+                                        <%= link_to dataset[field_hash[:name]][0], "#{ontology_link_generator "uberon", dataset[field_hash[:name]][0]}", target: "_blank" %>
+                                    <%when :developmental_stage_id %>
+                                        <% type =  dataset[field_hash[:name]][0].split(":")[0].downcase %>
+                                        <%= link_to dataset[field_hash[:name]][0], "#{ontology_link_generator type, dataset[field_hash[:name]][0]}", target: "_blank" %>
+                                    <%else%>
+                                        <%= dataset[field_hash[:name]][0] %>
+                                <%end%>
+                            </td>
+                        <%else%>
+                            <td class="bg-light">
+                            </td>
+                        <%end%>
                     <%end%>
                 <%end%>
 
@@ -122,8 +127,7 @@
                     </td>
                 <% else %>
                     <% dataset[:processed_data].one? {|e| e.nil?} ? empty = true : empty = false %>
-                        <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
-
+                        <td class="text-center <%= empty ? 'bg-light' : '' %>">
                             <% empty ? '' : extension = dataset[:processed_data][0].split('.')[-1] %>
                             <%= empty ? '' : (link_to "Download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block") %>
                         </td>

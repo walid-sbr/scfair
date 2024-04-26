@@ -7,7 +7,8 @@ class DatasetsController < ApplicationController
     # Hash of source sites links
     @sources_link = {
       "CELLxGENE": 'https://cellxgene.cziscience.com/',
-      "BGEE": "https://www.bgee.org/"
+      "BGEE": "https://www.bgee.org/",
+      "ASAP": "https://asap.epfl.ch/"
     }
 
     @fields = {
