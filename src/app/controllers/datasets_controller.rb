@@ -2,50 +2,81 @@ class DatasetsController < ApplicationController
   before_action :set_dataset, only: %i[ show edit update destroy ]
   helper_method [:ontology_link_generator]
 
-  # GET /datasets or /datasets.json
-  def index
-    # Hash of source sites links
-    @sources_link = {
-      "CELLxGENE": 'https://cellxgene.cziscience.com/',
-      "BGEE": "https://www.bgee.org/",
-      "ASAP": "https://asap.epfl.ch/"
-    }
+  def set_globals
 
+    @sources_link = {
+      "CELLxGENE" => 'https://cellxgene.cziscience.com/',
+      "BGEE" => "https://www.bgee.org/",
+      "ASAP" => "https://asap.epfl.ch/"
+    }
     @fields = {
-      "Number of Cells": {
+      "# Cells" => {
         name: :number_of_cells,
       },
-      "Species": {
+      "Species" => {
         name: :organisms,
       },
-      "Disease": {
+      "Disease" => {
         name: :disease,
       },
-      "Assays": {
+      "Assays" => {
         name: :assay_info,
       },
-      "Cell Type": {
+      "Cell Type" => {
         name: :cell_types,
       },
-      "Sex": {
+      "Sex" => {
         name: :sex,
       },
-      "Tissue": {
+      "Tissue" => {
         name: :tissue,
       },
-      "Tissue ID": {
+      "Tissue ID" => {
         name: :tissue_uberon,
       },
-      "Developmental Stage": {
+      "Developmental Stage"=> {
         name: :developmental_stage,
       },
-      "Developmental Stage ID": {
+      "Developmental Stage ID" => {
         name: :developmental_stage_id,
       }
     }
-    @datasets = Dataset.all
+    
+  end
+  
+  # GET /datasets or /datasets.json
+  def index
+    set_globals()
+    # Hash of source sites links
+    
+    #    @datasets = Dataset.all
   end
 
+
+  def search
+
+      @default_width = 80
+      set_globals()
+
+     q = params[:q].strip.gsub(/\$\{jndi\:/, '').gsub(/[\{\}\$\:\\]/, '')
+     @datasets = []
+     
+     if q == ''
+       @datasets = Dataset.all
+     else
+       query = Dataset.search do
+         fulltext q
+         paginate :page => 1, :per_page => Dataset.count
+       end
+       
+       @total = query.total
+       @datasets = query.results
+     end
+     
+     render :partial => 'search_results'
+    
+  end
+  
   # GET /datasets/1 or /datasets/1.json
   def show
   end

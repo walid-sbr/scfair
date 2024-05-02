@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     ports:
-      - "3000:3000"
+      - "32888:3000"
     volumes:
       - ./data:/data/scfair
       - ./src:/opt/scfair

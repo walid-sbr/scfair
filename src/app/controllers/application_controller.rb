@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
   end
   
   def init_session
+
+    session[:d_settings] ||= {:free_text => ''}
   end
 
 

@@ -1,0 +1,18 @@
+<div class="container mt-3">
+  <div class='row justify-content-md-center'>
+    <div class='col-md-7  mb-2'>
+      <div class="input-group btn-group" role="group" aria-label="Search">
+       <%= text_field_tag 'dataset_free_text', session[:d_settings][:free_text] || '', {:size => 30, :class => "form-control", :placeholder => "Search"} %>
+        <div id='dataset_autocomplete_container'></div>
+        <button id='dataset_search-btn' type="button" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id='filters'>
+  <% @fields.each_value do |h_field| %>
+   <%= text_field_tag "filter_" + h_field[:name], session[:d_settings][:filters][h_field[:name]] || '', {:size => 30, :class => "filter_field form-control", :placeholder => "e.g. blabla"} %>
+   <div id="filter_<%= h_field[:name] %>_autocomplete_container"></div>
+   <% end %>
+</div>

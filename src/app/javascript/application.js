@@ -7,3 +7,5 @@ import "./src/jquery"
 import "./src/jquery-ui"
 import "./src/jquery.ui.autocomplete.html"
 import "datatables.net"
+
+import "./src/custom"
