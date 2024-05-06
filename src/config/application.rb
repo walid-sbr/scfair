@@ -2,6 +2,9 @@ require_relative "boot"
 
 require "rails/all"
 
+# Require the middleware file
+require_relative 'middleware/compression_middleware'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -18,5 +21,9 @@ module Scfair
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Add the middleware to the middleware stack
+    config.middleware.use CompressionMiddleware
+
   end
 end

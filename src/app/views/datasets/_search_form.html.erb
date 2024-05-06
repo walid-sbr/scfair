@@ -10,9 +10,21 @@
   </div>
 </div>
 
-<div id='filters'>
-  <% @fields.each_value do |h_field| %>
-   <%= text_field_tag "filter_" + h_field[:name], session[:d_settings][:filters][h_field[:name]] || '', {:size => 30, :class => "filter_field form-control", :placeholder => "e.g. blabla"} %>
-   <div id="filter_<%= h_field[:name] %>_autocomplete_container"></div>
-   <% end %>
+
+<div id='filters' class='container'>
+  <div class="row row-cols-1 row-cols-md-4">
+  <% @fields.each do |field_name, h_field| %>
+  <% if !@fields_without_autocomplete_filter.include? field_name %>
+  <div class="col mb-4">
+    <div class='card'>
+      <div class='card-body'>
+	<%#  session[:d_settings][:filters][field_name] | %>
+	<%= text_field_tag "filter_" + field_name.to_s, '', {:size => 30, :class => "filter_field form-control", :placeholder => h_field[:label].to_s} %>
+      <div id="filter_<%= field_name %>_autocomplete_container"></div>
+      </div>
+    </div>
+  </div>
+  <% end %>
+  <% end %>
+  </div>
 </div>

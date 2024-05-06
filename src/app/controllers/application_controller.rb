@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   
   def init_session
 
-    session[:d_settings] ||= {:free_text => ''}
+    session[:d_settings] ||= {:free_text => '', :filters => {}}
   end
 
 

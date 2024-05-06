@@ -1,8 +1,4 @@
 @charset "UTF-8";
-.table-min-w {
-  min-width: 300px;
-}
-
 /*!
  * Bootstrap  v5.3.3 (https://getbootstrap.com/)
  * Copyright 2011-2024 The Bootstrap Authors
@@ -20576,4 +20572,16 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^=col-]:last-
   --dt-row-hover: 255, 255, 255;
   --dt-row-stripe: 255, 255, 255;
   --dt-column-ordering: 255, 255, 255;
+}
+
+.table-min-w {
+  min-width: 300px;
+}
+
+.test_ui {
+  background-color: white;
+}
+
+.test_ui li {
+  cursor: pointer;
 }

@@ -10,37 +10,19 @@ class DatasetsController < ApplicationController
       "ASAP" => "https://asap.epfl.ch/"
     }
     @fields = {
-      "# Cells" => {
-        name: :number_of_cells,
-      },
-      "Species" => {
-        name: :organisms,
-      },
-      "Disease" => {
-        name: :disease,
-      },
-      "Assays" => {
-        name: :assay_info,
-      },
-      "Cell Type" => {
-        name: :cell_types,
-      },
-      "Sex" => {
-        name: :sex,
-      },
-      "Tissue" => {
-        name: :tissue,
-      },
-      "Tissue ID" => {
-        name: :tissue_uberon,
-      },
-      "Developmental Stage"=> {
-        name: :developmental_stage,
-      },
-      "Developmental Stage ID" => {
-        name: :developmental_stage_id,
-      }
+      :number_of_cells => {:label => "# Cells"},
+      :organisms => {:label => "Species"},
+      :disease => {:label => "Disease"},
+      :assay_info => {:label => "Assays"},
+      :cell_types => {:label => "Cell Type"},
+      :sex => {:label => "Sex"},
+      :tissue => {:label => "Tissue"},
+      :tissue_uberon => {:label => "Tissue ID"},
+      :developmental_stage => {:label => "Developmental Stage"},
+      :developmental_stage_id => {:label => "Developmental Stage ID"}
     }
+
+    @fields_without_autocomplete_filter = [:number_of_cells, :tissue_uberon, :developmental_stage_id]
     
   end
   

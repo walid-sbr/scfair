@@ -1,35 +1,81 @@
 <%= render :partial => 'search_form' %>
 
-<div id='datasets_container'>
-</div>
+<div id='datasets_container'></div>
 
 <%= javascript_tag do %>
 
-function set_filter_autocomplete(h_list_values){
- let fields = Object.keys(h_list_values)
- for (var i=0; i<fields.length; i++){
+function getListofDatasetIDs(h){
 
- $("#filter_" + fields[i]).autocomplete({
-  minLength: 0,
-  appendTo: "#filter" + fields[i] + "autocomplete_container",
-  classes: {
-   "ui-autocomplete": "test_ui",
-  },
-  html: true,
-  position: {
-   offset: '0 0' // Shift 0px left, 4px down.
-  },
-  source: Object.keys(h_list_values[fields[i]]),
-  select: function( event, ui ) {
-   console.log(ui.item)
-  }
- }).focus(function () {
-    $(this).autocomplete("search");
- }).click(function(){
-    $(this).autocomplete("search");
- });
-				       
- }
+  let l = Object.keys(h)
+  for (let i=0; i<l.length; i++){
+    if ($("#filter_" + l[i]).length > 0){
+     dataset_ids = Object.keys(h[l[i]][$("#filter_" + l[i]).val()])
+  }}
+  
+
+}
+
+function filterDataTable(list_dataset_ids) {
+   // Iterate through each row in the DataTable
+    dataset_table.rows().every(function () {
+        var rowData = this.data(); // Get data of the current row
+        var valueInFirstColumn = rowData[0]; // Get value in the first column
+
+        // Check if the value in the first column matches any value in the filterValues array
+        if (list_dataset_ids.includes(valueInFirstColumn)) {
+            // If the value is in the filterValues array, show the row
+            $(this.node()).show();
+        } else {
+            // If the value is not in the filterValues array, hide the row
+            $(this.node()).hide();
+        }
+    });
+}
+
+function createAutocompleteWithValues(hListValues) {
+    return function(fields, i) {
+        $("#filter_" + fields[i]).autocomplete({
+            minLength: 0,
+            appendTo: "#filter" + fields[i] + "autocomplete_container",
+            classes: {
+                "ui-autocomplete": "test_ui",
+            },
+            html: true,
+            position: {
+                offset: '0 0' // Shift 0px left, 4px down.
+            },
+            source: function(request, response) {
+                var data = Object.keys(hListValues[fields[i]]);
+                var filteredData = $.ui.autocomplete.filter(data, request.term);
+                var maxItemsToShow = 20;
+var slicedData = filteredData.slice(0, maxItemsToShow);
+slicedData.sort(function(a, b) {
+                    return a.toLowerCase().localeCompare(b.toLowerCase());
+                });
+                response(slicedData);
+            },
+            select: function(event, ui) {
+//                console.log(ui.item);
+               filterDataTable(getListofDatasetIDs(hListValues))
+            }
+        }).focus(function() {
+            $(this).autocomplete("search");
+        }).click(function() {
+            $(this).autocomplete("search");
+        });
+    };
+}
+
+function set_filter_autocomplete(h_list_values) {
+    var fields = Object.keys(h_list_values);
+    var fields_to_remove = <%= raw @fields_without_autocomplete_filter.to_json %>
+    fields = fields.filter(item => !fields_to_remove.includes(item));
+
+    var autocompleteFunc = createAutocompleteWithValues(h_list_values);
+
+    for (var i = 0; i < fields.length; i++) {
+        autocompleteFunc(fields, i);
+    }
 }
 
 function do_search(){

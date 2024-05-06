@@ -3,10 +3,14 @@ $secondary: #6CADC8;
 $light: #F9E9EC;
 $dark: #0B0A22;
 
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons';
+@import 'datatables.net-bs5/css/dataTables.bootstrap5';
+
 .table-min-w {
     min-width: 300px;
 }
 
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons';
-@import 'datatables.net-bs5/css/dataTables.bootstrap5';
+
+.test_ui {background-color:white}
+.test_ui li {cursor:pointer}
