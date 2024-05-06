@@ -4,14 +4,27 @@
 
 <%= javascript_tag do %>
 
+
+function intersect_of_lists(l){
+
+
+
+}
+
+
 function getListofDatasetIDs(h){
 
-  let l = Object.keys(h)
-  for (let i=0; i<l.length; i++){
-    if ($("#filter_" + l[i]).length > 0){
-     dataset_ids = Object.keys(h[l[i]][$("#filter_" + l[i]).val()])
-  }}
-  
+let l = Object.keys(h)
+let list_of_dataset_ids = []
+for (let i=0; i<l.length; i++){
+	let filter_value = $("#filter_" + l[i]).val()		  
+    if ($("#filter_" + l[i]).length > 0 && h[l[i]][filter_value]){
+     dataset_ids = Object.keys(h[l[i]][filter_value])
+  if (list_of_dataset_ids.size > 0){ list_of_dataset_ids.push(dataset_ids)}  
+  }
+  }
+
+  return intersect_of_lists(list_of_dataset_ids)
 
 }
 

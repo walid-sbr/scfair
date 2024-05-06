@@ -36,26 +36,26 @@ class DatasetsController < ApplicationController
 
 
   def search
-
-      @default_width = 80
-      set_globals()
-
-     q = params[:q].strip.gsub(/\$\{jndi\:/, '').gsub(/[\{\}\$\:\\]/, '')
-     @datasets = []
-     
-     if q == ''
-       @datasets = Dataset.all
-     else
-       query = Dataset.search do
-         fulltext q
-         paginate :page => 1, :per_page => Dataset.count
-       end
-       
-       @total = query.total
-       @datasets = query.results
-     end
-     
-     render :partial => 'search_results'
+    
+    @default_width = 80
+    set_globals()
+    
+    q = params[:q].strip.gsub(/\$\{jndi\:/, '').gsub(/[\{\}\$\:\\]/, '')
+    @datasets = []
+    
+    if q == ''
+      @datasets = Dataset.all
+    else
+      query = Dataset.search do
+        fulltext q
+        paginate :page => 1, :per_page => Dataset.count
+      end
+      
+      @total = query.total
+      @datasets = query.results
+    end
+    
+    render :partial => 'search_results'
     
   end
   
