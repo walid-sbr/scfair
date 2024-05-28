@@ -7,7 +7,15 @@
 
 function intersect_of_lists(l){
 
-
+const flatArray = l.flat();
+const idCount = flatArray.reduce((acc, id) => {
+    acc[id] = (acc[id] || 0) + 1;
+    return acc;
+  }, {});
+  // Filter IDs that occurred in all nested arrays
+  const intersection = Object.keys(idCount).filter(id => idCount[id] === l.length);
+    const result = intersection.map(id => parseInt(id))
+    return result;
 
 }
 
@@ -17,34 +25,50 @@ function getListofDatasetIDs(h){
 let l = Object.keys(h)
 let list_of_dataset_ids = []
 for (let i=0; i<l.length; i++){
-	let filter_value = $("#filter_" + l[i]).val()		  
+			  let filter_value = $("#filter_" + l[i]).val()
+			 // console.log("field:" + l[i])
+			//  console.log("field_value" + filter_value)
+			//  console.log("value:" + h[l[i]][filter_value])
     if ($("#filter_" + l[i]).length > 0 && h[l[i]][filter_value]){
-     dataset_ids = Object.keys(h[l[i]][filter_value])
-  if (list_of_dataset_ids.size > 0){ list_of_dataset_ids.push(dataset_ids)}  
+  let dataset_ids = Object.keys(h[l[i]][filter_value])
+  if (dataset_ids.length > 0){ list_of_dataset_ids.push(dataset_ids)}  
   }
   }
-
-  return intersect_of_lists(list_of_dataset_ids)
+  let res = intersect_of_lists(list_of_dataset_ids)
+  return res
 
 }
 
-function filterDataTable(list_dataset_ids) {
+  function filterDataTable(list_dataset_ids) {
    // Iterate through each row in the DataTable
     dataset_table.rows().every(function () {
         var rowData = this.data(); // Get data of the current row
         var valueInFirstColumn = rowData[0]; // Get value in the first column
-
         // Check if the value in the first column matches any value in the filterValues array
-        if (list_dataset_ids.includes(valueInFirstColumn)) {
+        if (list_dataset_ids.includes(parseInt(valueInFirstColumn))) {
             // If the value is in the filterValues array, show the row
             $(this.node()).show();
         } else {
             // If the value is not in the filterValues array, hide the row
             $(this.node()).hide();
         }
-    });
+  });
+  
 }
 
+  function filterDataTable2(list_dataset_ids){
+    console.log("list_datasets: " + list_dataset_ids)
+
+   $.fn.dataTable.ext.search.push(
+  function(settings, data, dataIndex) {
+  var rowId = data[0] //dataset_table.row(dataIndex).node().id;
+          return list_dataset_ids.includes(parseInt(rowId));
+        }
+      );
+      dataset_table.draw();
+      $.fn.dataTable.ext.search.pop(); // Remove the filter after applying
+  }
+  
 function createAutocompleteWithValues(hListValues) {
     return function(fields, i) {
         $("#filter_" + fields[i]).autocomplete({
@@ -68,8 +92,9 @@ slicedData.sort(function(a, b) {
                 response(slicedData);
             },
             select: function(event, ui) {
-//                console.log(ui.item);
-               filterDataTable(getListofDatasetIDs(hListValues))
+//               console.log(ui.item);
+               $(this).val(ui.item.value)
+               filterDataTable2(getListofDatasetIDs(hListValues))
             }
         }).focus(function() {
             $(this).autocomplete("search");
