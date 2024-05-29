@@ -1,0 +1,3 @@
+class Ontology < ApplicationRecord
+
+end
