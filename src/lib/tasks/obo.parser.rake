@@ -43,10 +43,10 @@ namespace :obo do
         current_term[:name] = line.split(' ', 2)[1].strip
       elsif line.start_with?("is_a: ")
         is_a = line.split(' ')[1].strip
-        current_term[:is_a] = is_a if is_a.match?(/^[A-Za-z]+:\d+$/)
+        current_term[:is_a] = is_a if is_a.match?(/^[A-Za-z]+:\d+$/) && is_a != current_term[:identifier]
       elsif line.start_with?("relationship: part_of ")
         part_of = line.split(' ')[2].strip
-        current_term[:part_of] = part_of if part_of.match?(/^[A-Za-z]+:\d+$/)
+        current_term[:part_of] = part_of if part_of.match?(/^[A-Za-z]+:\d+$/) && part_of != current_term[:identifier]
       end
     end
 
