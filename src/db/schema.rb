@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_29_122952) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_31_080744) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -38,13 +38,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_29_122952) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "ontologies", id: false, force: :cascade do |t|
-    t.string "id"
+  create_table "ontology_terms", force: :cascade do |t|
+    t.string "identifier"
     t.string "name"
     t.string "parents"
     t.string "children"
+    t.string "all_children"
+    t.string "all_parents"
+    t.string "exists_in_datasets"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["identifier"], name: "index_ontology_terms_on_identifier", unique: true
   end
 
   create_table "users", force: :cascade do |t|
