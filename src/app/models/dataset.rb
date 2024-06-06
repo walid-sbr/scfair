@@ -21,5 +21,20 @@ class Dataset < ApplicationRecord
     text :link_to_explore_data
     text :link_to_raw_data
     text :dataset_hash
+
+    text :ontology_children, default_boost: 0.3, stored: true do
+      terms = [tissue_uberon, developmental_stage_id].flatten
+      ots = OntologyTerm.where(:identifier => terms).all
+      children = OntologyTerm.where(:identifier => ots.map{|e| e.all_children.split(",")}.flatten.compact).all
+      children.map{|e| [e.identifier, e.name]}
+    end
+
+    text :ontology_parents, default_boost: 0.3, stored: true do
+      terms = [tissue_uberon, developmental_stage_id].flatten
+      ots = OntologyTerm.where(:identifier => terms).all
+      parents = OntologyTerm.where(:identifier => ots.map{|e| e.all_parents.split(",")}.flatten.compact).all
+      parents.map{|e| [e.identifier, e.name]}
+    end
+
   end
 end
