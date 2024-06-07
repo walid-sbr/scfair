@@ -25,14 +25,26 @@ class Dataset < ApplicationRecord
     text :ontology_children, default_boost: 0.3, stored: true do
       terms = [tissue_uberon, developmental_stage_id].flatten
       ots = OntologyTerm.where(:identifier => terms).all
-      children = OntologyTerm.where(:identifier => ots.map{|e| e.all_children.split(",")}.flatten.compact).all
+      children_identifiers = ots.map { |e| e.all_children }
+      .flatten
+      .compact
+      .flat_map { |children| children.split(",") }
+      .compact
+
+      children = OntologyTerm.where(identifier: children_identifiers).all
       children.map{|e| [e.identifier, e.name]}
     end
 
     text :ontology_parents, default_boost: 0.3, stored: true do
       terms = [tissue_uberon, developmental_stage_id].flatten
       ots = OntologyTerm.where(:identifier => terms).all
-      parents = OntologyTerm.where(:identifier => ots.map{|e| e.all_parents.split(",")}.flatten.compact).all
+      parents_identifiers = ots.map { |e| e.all_parents }
+                          .flatten
+                          .compact
+                          .flat_map { |parents| parents.split(",") }
+                          .compact
+
+      parents = OntologyTerm.where(identifier: parents_identifiers).all
       parents.map{|e| [e.identifier, e.name]}
     end
 

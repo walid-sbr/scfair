@@ -2,8 +2,8 @@ require 'net/http'
 
 class BGEE_API
   @@BGEE_COLLECTIONS_URL = "https://api.bgee.org/api_15_1/?page=data&action=experiments&data_type=SC_RNA_SEQ&get_results=1&offset=0&limit=1000"
-  @@BGEE_DATASETS_BASE_URL = "https://www.bgee.org/api/?display_type=json&page=data&exp_id="
   @@SOURCE = "BGEE"
+  @@bgg_datasets_base_url = lambda { |experiment_id| "https://www.bgee.org/api/?page=data&action=raw_data_annots&data_type=SC_RNA_SEQ&get_results=1&offset=0&limit=50&filter_exp_id=#{experiment_id}&filters_for_all=1" }
 
   def init
     collections_id = get_collections_id
@@ -48,7 +48,7 @@ class BGEE_API
     collections_id.each do |id|
       puts "gather info of id #{id}"
       http = Net::HTTP
-      url = URI.parse(@@BGEE_DATASETS_BASE_URL + id)
+      url = URI.parse(@@bgg_datasets_base_url.call(id))
       req = http.get(url)
 
         collection = JSON.parse(req, { symbolize_names: true })
@@ -75,15 +75,16 @@ class BGEE_API
           sex: [],
       }
 
-        if changed? collection[:data][:assays]
+        # checking id there is an exception and if the datasets has changed
+        if collection[:data][:exceptionType].nil? && changed?(collection[:data][:results][:SC_RNA_SEQ])
 
           # Diving in datasets
-          collection[:data][:assays].each do |dataset|
+          collection[:data][:results][:SC_RNA_SEQ].each do |dataset|
 
             @data[:collection_id] = dataset[:library][:experiment][:xRef][:xRefId]
             @data[:link_to_dataset] = nil
             @data[:source] = @@SOURCE
-            @data[:doi] = nil
+            @data[:doi] = dataset[:library][:experiment][:dOI]
             @data[:number_of_cells] << nil
 
             @data[:link_to_raw_data] << dataset[:library][:experiment][:xRef][:xRefURL]
@@ -104,7 +105,7 @@ class BGEE_API
           end
           add_to_db
         else
-          puts 'does not change'
+          puts 'does not change or Exception'
         end
       end
     end
