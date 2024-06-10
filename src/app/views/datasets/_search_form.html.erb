@@ -18,7 +18,6 @@
   <div class="col mb-4">
     <div class='card'>
       <div class='card-body'>
-	<%#  session[:d_settings][:filters][field_name] | %>
 	<%= text_field_tag "filter_" + field_name.to_s, '', {:size => 30, :class => "filter_field form-control", :placeholder => h_field[:label].to_s} %>
 	<div id="filter_<%= field_name %>_autocomplete_container"></div>
       </div>

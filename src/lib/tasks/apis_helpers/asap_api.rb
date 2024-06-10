@@ -47,7 +47,7 @@ class ASAP_API
         assay_info: [],
         processed_data: [],
         link_to_dataset: [],
-        link_to_explore_data: [],
+        link_to_explore_data: nil,
         link_to_raw_data: [],
         cell_types: [],
         tissue: [],

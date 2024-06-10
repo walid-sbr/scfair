@@ -31,7 +31,8 @@ task api_updates: :environment do
   tasks_to_run = [
     'update_cxg',
     'update_bgee',
-    'index_db'
+    'update_asap',
+    'index_db',
   ]
 
   tasks_to_run.each do |task|

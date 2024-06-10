@@ -34,7 +34,12 @@
 
         <!-- LINK TO DATASET TABLE HEADER -->
         <th scope="col" class="text-center" style="min-width: 300px">
-            <p class="text-center">Link to Datase</p>
+            <p class="text-center">Link to Dataset</p>
+        </th>
+
+        <!-- LINK TO EXPLORE DATASET TABLE HEADER -->
+        <th scope="col" class="text-center" style="min-width: 300px">
+            <p class="text-center">Link to explore Data</p>
         </th>
 
         <!-- EXTERNAL RESOURCES TABLE HEADER -->
@@ -85,12 +90,12 @@
                             <%else%>
                                 <td class="text-center">
                                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <%# "#{dataset[field_name].uniq.length} #{field_label.to_s.downcase.pluralize}" %>
+                                        <%= "#{dataset[field_name].uniq.length} #{field_label.to_s.downcase.pluralize}" %>
                                     </button>
                                     <ul class="dropdown-menu">
                                         <% for i in (0..dataset[field_name].uniq.length - 1)%>
                                             <li class="px-2 py-1">
-                                                <%# dataset[field_label].uniq[i] %>
+                                                <%= dataset[field_name].uniq[i] %>
                                             </li>
                                         <%end%>
                                     </ul>
@@ -98,7 +103,7 @@
                         <%end%>                                
                     <%else%>
                         <% if !(dataset[field_name].uniq.length == 0) %>
-                            <% dataset[field_name].one? {|e| e.nil?} ? empty = true : empty = false %>
+                            <% dataset[field_name][0].nil? ? empty = true : empty = false %>
                             <td class="text-center <%= empty ? "bg-light": "" %>">
                                 <%case field_name%>
                                     <%when :tissue_uberon %>
@@ -143,6 +148,13 @@
                         <%end%>
                     </td>
 
+                <% dataset[:link_to_explore_data].nil? ? empty = true : empty = false %>
+                    <td class="text-center <%= empty ? "bg-light" : "" %>">
+                        <%if !empty%>
+                            <%= link_to "Go to #{dataset[:source]} explorer", "#{dataset[:link_to_explore_data][0]}", target: "_blank", class: "btn btn-outline-dark px-2 display-block" %>
+                        <%end%>
+                    </td>
+
                 <% if dataset[:link_to_raw_data].uniq.length > 1 %>
                     <td class="text-center">
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -174,6 +186,8 @@
   <%= javascript_tag do %>
     var dataset_table = $("#datasets").DataTable({
         scrollX: true,
+        searching: false,
+        dom: 'lrtip'
     })
 
   var datasets = <%= raw @datasets.to_json %>
@@ -194,9 +208,7 @@
 		                       h_list_values[fields[j]][v][datasets[i].id]=1
 		                     }
 		   }
-  }
-
-  console.log(h_list_values)		   
+  }	   
 
   set_filter_autocomplete(h_list_values)		   
 		   

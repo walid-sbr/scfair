@@ -100,7 +100,10 @@ class BGEE_API
             @data[:organisms] << dataset[:annotation][:rawDataCondition][:species][:name]
             @data[:disease] << 'normal' # always normal for Bgee according to discussions
             @data[:assay_info] << dataset[:library][:technology][:protocolName]
-            @data[:processed_data] << dataset[:library][:experiment][:downloadUrl]
+
+            dataset[:library][:experiment][:downloadFiles].each do |source|
+              @data[:processed_data] << "#{source[:path]}#{source[:fileName]}"
+            end
 
           end
           add_to_db

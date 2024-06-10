@@ -90,7 +90,7 @@ class CELLxGENE_API
             end
 
             @data[:dataset_id] = dataset[:dataset_id]
-            @data[:link_to_explore_data] = dataset[:explorer_url]
+            @data[:link_to_explore_data] << dataset[:explorer_url]
             @data[:number_of_cells] << dataset[:cell_count]
 
             dataset[:cell_type].each do |cell|
