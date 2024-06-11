@@ -26,10 +26,7 @@ let l = Object.keys(h)
 let list_of_dataset_ids = []
 for (let i=0; i<l.length; i++){
 			  let filter_value = $("#filter_" + l[i]).val()
-			 // console.log("field:" + l[i])
-			//  console.log("field_value" + filter_value)
-			//  console.log("value:" + h[l[i]][filter_value])
-    if ($("#filter_" + l[i]).length > 0 && h[l[i]][filter_value]){
+    if ($("#filter_" + l[i]).length > 0 && h[l[i]][filter_value] && filter_value !== ""){
   let dataset_ids = Object.keys(h[l[i]][filter_value])
   if (dataset_ids.length > 0){ list_of_dataset_ids.push(dataset_ids)}  
   }
@@ -57,7 +54,6 @@ for (let i=0; i<l.length; i++){
 }
 
   function filterDataTable2(list_dataset_ids){
-    console.log("list_datasets: " + list_dataset_ids)
 
    $.fn.dataTable.ext.search.push(
   function(settings, data, dataIndex) {
