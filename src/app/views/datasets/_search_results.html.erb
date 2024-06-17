@@ -6,24 +6,24 @@
     <thead>
       <tr>
         <!-- ROW NUMBER -->
-        <th scope="col" style="min-width: 80px">
+        <th scope="col" style=""> <!--min-width: 80px">-->
           <p class="text-center">Id</p>
         </th>
 
         <!-- SOURCE TABLE HEADER -->
-        <th scope="col" style="min-width: 100px">
+        <th scope="col"><!-- style="min-width: 100px">-->
             <p class="text-center">Source</p>
         </th>
 
         <!-- DOI TABLE HEADER -->
-        <th scope="col" style="min-width: 300px">
+        <th scope="col"><!-- style="min-width: 300px">-->
             <p class="text-center">Article</p>
         </th>
 
         <!-- FIELDS TABLE HEADER -->        
         <% @fields.each do |field_name, field_hash| %>
             <th scope="col" style="min-width: <%= @default_width || field_hash[:width] %>px">
-                <p class="text-center"><%= field_name %></p>
+                <p class="text-center"><%= field_hash[:label] %></p>
             </th>
         <%end%>
 
@@ -184,6 +184,8 @@
   </table>
 
   <%= javascript_tag do %>
+
+  
     var dataset_table = $("#datasets").DataTable({
         scrollX: true,
         dom: 'lrtip'
@@ -191,6 +193,8 @@
 
   var datasets = <%= raw @datasets.to_json %>
   var fields = <%= raw @fields.keys.to_json %> <%# .map{|k| @fields[k][:label]}.to_json %>
+
+  
   
   var h_list_values = {}
   
@@ -208,9 +212,13 @@
 		                     }
 		   }
   }	   
+		   var dataset_ids = datasets.map(x => x.id)
+    console.log(dataset_ids)
+  set_filter_autocomplete(h_list_values, dataset_ids)		   
 
-  set_filter_autocomplete(h_list_values)		   
-		   
+    $("#filter_fields_container").removeClass("hidden")
+    $("#filter_fields_waiting").addClass("hidden")
+    
   <% end %>
 
   <% else %>

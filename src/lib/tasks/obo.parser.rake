@@ -74,6 +74,7 @@ namespace :obo do
       child_list = children[identifier].uniq.empty? ? "nil" : children[identifier].uniq.join(',')
       parent_list = parents[identifier].uniq.empty? ? "nil" : parents[identifier].uniq.join(',')
 
+      puts "add/update ontology term #{identifier}"
       ontology_record = OntologyTerm.find_or_initialize_by(identifier: identifier)
       ontology_record.update(
         name: name,

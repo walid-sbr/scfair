@@ -26,6 +26,7 @@ let l = Object.keys(h)
 let list_of_dataset_ids = []
 for (let i=0; i<l.length; i++){
 			  let filter_value = $("#filter_" + l[i]).val()
+			  console.log("filter_value:" + filter_value)
     if ($("#filter_" + l[i]).length > 0 && h[l[i]][filter_value] && filter_value !== ""){
   let dataset_ids = Object.keys(h[l[i]][filter_value])
   if (dataset_ids.length > 0){ list_of_dataset_ids.push(dataset_ids)}  
@@ -55,6 +56,9 @@ for (let i=0; i<l.length; i++){
 
   function filterDataTable2(list_dataset_ids){
 
+  if ($.fn.dataTable.ext.search.length >0){
+    $.fn.dataTable.ext.search.pop(); // Remove the filter after applying
+   }
    $.fn.dataTable.ext.search.push(
   function(settings, data, dataIndex) {
   var rowId = data[0] //dataset_table.row(dataIndex).node().id;
@@ -62,12 +66,18 @@ for (let i=0; i<l.length; i++){
         }
       );
       dataset_table.draw();
-      $.fn.dataTable.ext.search.pop(); // Remove the filter after applying
+
+  
   }
   
 function createAutocompleteWithValues(hListValues) {
-    return function(fields, i) {
-        $("#filter_" + fields[i]).autocomplete({
+  return function(fields, i) {
+ 
+  if ($("#filter_" + fields[i]).data('ui-autocomplete')) {
+  console.log("destroy autocomplete")
+  $("#filter_" + fields[i]).autocomplete('destroy');
+  }
+      $("#filter_" + fields[i]).autocomplete({
             minLength: 0,
             appendTo: "#filter" + fields[i] + "autocomplete_container",
             classes: {
@@ -78,9 +88,10 @@ function createAutocompleteWithValues(hListValues) {
                 offset: '0 0' // Shift 0px left, 4px down.
             },
             source: function(request, response) {
-                var data = Object.keys(hListValues[fields[i]]);
-                var filteredData = $.ui.autocomplete.filter(data, request.term);
-                var maxItemsToShow = 20;
+  var data = Object.keys(hListValues[fields[i]]);
+  console.log(data)
+  var filteredData = $.ui.autocomplete.filter(data, request.term);
+                  var maxItemsToShow = 20;
 var slicedData = filteredData.slice(0, maxItemsToShow);
 slicedData.sort(function(a, b) {
                     return a.toLowerCase().localeCompare(b.toLowerCase());
@@ -89,8 +100,11 @@ slicedData.sort(function(a, b) {
             },
             select: function(event, ui) {
 //               console.log(ui.item);
-               $(this).val(ui.item.value)
-               filterDataTable2(getListofDatasetIDs(hListValues))
+  $(this).val(ui.item.value)
+             let dataset_ids = getListofDatasetIDs(hListValues)
+  filterDataTable2(dataset_ids)
+  console.log(hListValues, dataset_ids)
+   set_filter_autocomplete(h_list_values, dataset_ids)
             }
         }).focus(function() {
             $(this).autocomplete("search");
@@ -100,18 +114,100 @@ slicedData.sort(function(a, b) {
     };
 }
 
-function set_filter_autocomplete(h_list_values) {
+  function filter_hash(h, l) {
+   let filteredHash = {}; // Create a new hash to store filtered values
+
+    // Iterate over each field_name in the original hash
+    for (let field_name in h) {
+        if (h.hasOwnProperty(field_name)) {
+            filteredHash[field_name] = {}; // Initialize field_name in the filtered hash
+
+            // Iterate over each field_value for the current field_name
+            for (let field_value in h[field_name]) {
+                if (h[field_name].hasOwnProperty(field_value)) {
+                    filteredHash[field_name][field_value] = {}; // Initialize field_value in the filtered hash
+
+                    // Iterate over each dataset_id for the current field_value
+                    for (let dataset_id in h[field_name][field_value]) {
+                        if (h[field_name][field_value].hasOwnProperty(dataset_id)) {
+                            // If dataset_id is in the list l, include it in the filtered hash
+                            if (l.includes(parseInt(dataset_id))) {
+                                filteredHash[field_name][field_value][dataset_id] = 1;
+                            }
+                        }
+                    }
+
+                    // If after filtering, no dataset_ids are left, remove the field_value
+                    if (Object.keys(filteredHash[field_name][field_value]).length === 0) {
+                        delete filteredHash[field_name][field_value];
+                    }
+                }
+            }
+        }
+    }
+  return filteredHash;
+  
+  /*console.log(l)
+    // Iterate over each field_name in the hash
+    for (let field_name in h) {
+        if (h.hasOwnProperty(field_name)) {
+            // Iterate over each field_value for the current field_name
+            for (let field_value in h[field_name]) {
+                if (h[field_name].hasOwnProperty(field_value)) {
+                    // Iterate over each dataset_id for the current field_value
+                    for (let dataset_id in h[field_name][field_value]) {
+                        if (h[field_name][field_value].hasOwnProperty(dataset_id)) {
+                            // If dataset_id is not in the list l, remove it
+  if (!l.includes(parseInt(dataset_id))) {
+  console.log("delete dataset_id" + dataset_id)
+  
+                                delete h[field_name][field_value][dataset_id];
+                            }
+                        }
+                    }
+                    // If after filtering, no dataset_ids are left, remove the field_value
+                    if (Object.keys(h[field_name][field_value]).length === 0) {
+                        delete h[field_name][field_value];
+                    }
+                }
+            }
+        }
+    }
+  return h;
+  */
+}
+  
+  function set_filter_autocomplete(h_list_values, dataset_ids) {
+  console.log("set autocomplete for all fields!")
     var fields = Object.keys(h_list_values);
     var fields_to_remove = <%= raw @fields_without_autocomplete_filter.to_json %>
     fields = fields.filter(item => !fields_to_remove.includes(item));
 
-    var autocompleteFunc = createAutocompleteWithValues(h_list_values);
+    // filter h_list_values that have none entry that have at least one dataset in dataset_ids
+  console.log("test")
+//  let tmp_h = Object.assign({}, h_list_values);
+  filtered_h_list_values = filter_hash(h_list_values, dataset_ids)
+    var autocompleteFunc = createAutocompleteWithValues(filtered_h_list_values);
 
     for (var i = 0; i < fields.length; i++) {
         autocompleteFunc(fields, i);
     }
 }
 
+$(".filter_field").on('keyup', function(e) {
+			if (e.which === 8 || e.which === 46) {
+			console.log("test!!")
+			let dataset_ids = getListofDatasetIDs(h_list_values)
+			console.log(dataset_ids)
+			if (dataset_ids.length == 0){
+			dataset_ids = datasets.map(x => x.id)
+			}
+    filterDataTable2(dataset_ids)
+     set_filter_autocomplete(h_list_values, dataset_ids)
+			}
+})
+
+			
 function do_search(){
 
 /*var h_filters = {

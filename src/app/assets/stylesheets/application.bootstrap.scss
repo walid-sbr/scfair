@@ -7,6 +7,7 @@ $dark: #0B0A22;
 @import 'bootstrap-icons/font/bootstrap-icons';
 @import 'datatables.net-bs5/css/dataTables.bootstrap5';
 
+.hidden {display:none}
 .table-min-w {
     min-width: 300px;
 }
@@ -14,3 +15,4 @@ $dark: #0B0A22;
 
 .test_ui {background-color:white}
 .test_ui li {cursor:pointer}
+.ui-helper-hidden-accessible {display:none}

@@ -12,7 +12,11 @@
 
 
 <div id='filters'>
-  <div class="row row-cols-1 row-cols-md-4">
+  <b>Filters</b>
+  <div id='filter_fields_waiting' class="">
+<!--    <i class='fa fa-spinner fa-spin fa-2x'></i> Loading ...-->
+  </div>
+  <div id='filter_fields_container' class="row row-cols-1 row-cols-md-4 hidden">
   <% @fields.each do |field_name, h_field| %>
   <% if !@fields_without_autocomplete_filter.include? field_name %>
   <div class="col mb-4">
@@ -27,3 +31,9 @@
   <% end %>
   </div>
 </div>
+
+<%= javascript_tag do %>
+
+
+
+<% end %>

@@ -47,6 +47,9 @@ gem "bootsnap", require: false
 
 gem 'sunspot_rails'
 gem 'sunspot_solr'
+gem "font_awesome5_rails"
+
+gem 'progress_bar'
 
 # Use Sass to process CSS
 # gem "sassc-rails"
