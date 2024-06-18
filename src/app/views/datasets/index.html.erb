@@ -1,9 +1,15 @@
-<%= render :partial => 'search_form' %>
+    
+    <%= render :partial => 'search_form' %>
 
-<div id='datasets_container'></div>
+    <div id='datasets_container' class="p-2" style="display: none"></div>
+
+    <div id='spinner' class="flex-column justify-content-center align-items-center vh-100 w-100" style='display: flex'>
+        <div class="spinner-border text-primary" role="status">
+        </div>
+        <h4 class="mt-5">Please wait while we load datasets...</h4>
+    </div>
 
 <%= javascript_tag do %>
-
 
 function intersect_of_lists(l){
 
@@ -54,7 +60,6 @@ for (let i=0; i<l.length; i++){
 }
 
   function filterDataTable2(list_dataset_ids){
-
   if ($.fn.dataTable.ext.search.length >0){
     $.fn.dataTable.ext.search.pop(); // Remove the filter after applying
    }

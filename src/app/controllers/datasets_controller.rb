@@ -23,26 +23,26 @@ class DatasetsController < ApplicationController
     }
 
     @fields_without_autocomplete_filter = [:number_of_cells, :tissue_uberon, :developmental_stage_id]
-    
+
   end
-  
+
   # GET /datasets or /datasets.json
   def index
     set_globals()
     # Hash of source sites links
-    
+
     #    @datasets = Dataset.all
   end
 
 
   def search
-    
-    @default_width = 80
+
+    @default_width = 250
     set_globals()
-    
+
     q = params[:q].strip.gsub(/\$\{jndi\:/, '').gsub(/[\{\}\$\:\\]/, '')
     @datasets = []
-    
+
     if q == ''
       @datasets = Dataset.all
     else
@@ -50,15 +50,15 @@ class DatasetsController < ApplicationController
         fulltext q
         paginate :page => 1, :per_page => Dataset.count
       end
-      
+
       @total = query.total
       @datasets = query.results
     end
-    
+
     render :partial => 'search_results'
-    
+
   end
-  
+
   # GET /datasets/1 or /datasets/1.json
   def show
   end

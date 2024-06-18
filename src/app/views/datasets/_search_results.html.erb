@@ -6,17 +6,17 @@
     <thead>
       <tr>
         <!-- ROW NUMBER -->
-        <th scope="col" style=""> <!--min-width: 80px">-->
+        <th scope="col" style="min-width: 80px"> <!--min-width: 80px">-->
           <p class="text-center">Id</p>
         </th>
 
         <!-- SOURCE TABLE HEADER -->
-        <th scope="col"><!-- style="min-width: 100px">-->
+        <th scope="col" style="min-width: 100px"><!-- style="min-width: 100px">-->
             <p class="text-center">Source</p>
         </th>
 
         <!-- DOI TABLE HEADER -->
-        <th scope="col"><!-- style="min-width: 300px">-->
+        <th scope="col" style="min-width: 300px"><!-- style="min-width: 300px">-->
             <p class="text-center">Article</p>
         </th>
 
@@ -184,11 +184,20 @@
   </table>
 
   <%= javascript_tag do %>
-
   
     var dataset_table = $("#datasets").DataTable({
         scrollX: true,
-        dom: 'lrtip'
+        dom: 'lrtip',
+        "fnInitComplete": function (oSettings, json) {
+            const container = document.querySelector('#datasets_container')
+            const spinner = document.querySelector('#spinner')
+            const _search_form = document.querySelector('#_search_form')
+            const filters = document.querySelector('#filters')
+            spinner.style.display = "none";
+            container.style.display = "block";
+            _search_form.style.display = "block";
+            filters.style.display = "block";
+        }
     })
 
   var datasets = <%= raw @datasets.to_json %>
