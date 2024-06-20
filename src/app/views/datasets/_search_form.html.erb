@@ -1,33 +1,20 @@
-<div id ='_search_form' class="container p-2" style="display: none">
-  <div class='row justify-content-md-center'>
-    <div class='col-md-7  mb-2'>
-      <div class="input-group btn-group" role="group" aria-label="Search">
-       <%= text_field_tag 'dataset_free_text', session[:d_settings][:free_text] || '', {:size => 30, :class => "form-control", :placeholder => "Search"} %>
-        <div id='dataset_autocomplete_container'></div>
-        <button id='dataset_search-btn' type="button" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+<div id ='_search_form' style="display: none" class="flex-column justify-content-start align-items-center h-100">
+    <div class='d-flex justify-content-between align-items-center w-100 p-4'>
+      <div class="input-group btn-group w-100" role="group" aria-label="Search">
+        <%= text_field_tag 'dataset_free_text', session[:d_settings][:free_text] || '', {:class => "form-control me-1 p-2", :placeholder => "Search"} %>
+        <button id='dataset_search-btn' type="button" class="btn btn-primary text-white">Search</button>
       </div>
     </div>
-  </div>
-</div>
 
+    <h4><b class="mb-2">Filters</b><h4>
 
-<div id='filters' class="p-2" style="display: none">
-  <h5><b class="mb-2" >Filters</b><h5>
-  <div id='filter_fields_waiting' class="">
-<!--    <i class='fa fa-spinner fa-spin fa-2x'></i> Loading ...-->
-  </div>
-  <div id='filter_fields_container' class="row row-cols-1 row-cols-md-4 hidden">
-  <% @fields.each do |field_name, h_field| %>
-  <% if !@fields_without_autocomplete_filter.include? field_name %>
-  <div class="col mb-4">
-    <div class='card'>
-      <div class='card-body'>
-	<%= text_field_tag "filter_" + field_name.to_s, '', {:size => 30, :class => "filter_field form-control", :placeholder => h_field[:label].to_s} %>
-	<div id="filter_<%= field_name %>_autocomplete_container"></div>
+    <div id='filter_fields_container' class="d-flex flex-column justify-content-around align-items-center p-2">
+    <% @fields.each do |field_name, h_field| %>
+      <% if !@fields_without_autocomplete_filter.include? field_name %>
+      <div class="d-flex flex-column">
+          <%= text_field_tag "filter_" + field_name.to_s, '', {:size => 30, :class => "filter_field form-control p-3 my-1", :placeholder => h_field[:label].to_s} %>
       </div>
+      <% end %>
+    <% end %>
     </div>
-  </div>
-  <% end %>
-  <% end %>
-  </div>
 </div>
