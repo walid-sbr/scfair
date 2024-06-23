@@ -1,0 +1,2 @@
+class ExtSource < ApplicationRecord
+end

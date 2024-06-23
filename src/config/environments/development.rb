@@ -12,8 +12,8 @@ Rails.application.configure do
   # Code is not reloaded between requests.
 #  config.cache_classes = true
 
-  Rails.application.routes.default_url_options[:protocol] = 'https'
-  config.action_controller.default_url_options = { protocol: 'https'}
+#  Rails.application.routes.default_url_options[:protocol] = 'https'
+ # config.action_controller.default_url_options = { protocol: 'https'}
   # Do not eager load code on boot.
   config.eager_load = false
 

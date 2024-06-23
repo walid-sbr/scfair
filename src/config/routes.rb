@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :ext_sources
   resources :studies
   resources :journals
   resources :datasets do

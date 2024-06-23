@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_22_141020) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_23_185307) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -34,6 +34,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_22_141020) do
     t.string "link_to_explore_data", default: [], array: true
     t.string "link_to_raw_data", default: [], array: true
     t.string "dataset_hash"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "ext_source_ids", default: [], array: true
+  end
+
+  create_table "ext_sources", force: :cascade do |t|
+    t.string "url_mask"
+    t.string "name"
+    t.string "description"
+    t.string "id_regexp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
