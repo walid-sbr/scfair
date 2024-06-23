@@ -7,7 +7,7 @@ module ApplicationHelper
   end
   
   def display_study s
-    html = s.first_author + ", " + s.year.to_s
+    html = [((s and s.first_author) ? s.first_author : nil), ((s and s.year) ? s.year.to_s : nil)].compact.join(", ")
     return html
   end
 
@@ -32,8 +32,8 @@ module ApplicationHelper
          case f
          when :tissue
            html += link_to vals[i], "#{ontology_link_generator "uberon", d[:tissue_uberon][i]}", target: "_blank"
-         when :development_stage
-           type =  d[f][0].split(":")[0].downcase
+         when :developmental_stage
+           type =  d[:developmental_stage_id][i].split(":")[0].downcase
            html += link_to vals[i], "#{ontology_link_generator type, d[:developmental_stage_id][i]}", target: "_blank"
         else
            html += vals[i]

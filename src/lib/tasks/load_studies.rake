@@ -28,6 +28,7 @@ task load_studies: :environment do
       else
         puts "Update study..."
         #            h[:key] = Basic.create_key(Study, 6) if !s.key                                                                                      
+        puts h[:title]
         s.update(h)
       end
     else

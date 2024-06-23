@@ -94,7 +94,7 @@
 	    <% end %>
 	  </td>
 	  <td class="text-center <%= (dataset[:doi].nil?) ? 'bg-light' : '' %> ">
-            <%= dataset[:doi].nil? ? "" : (link_to raw(display_study(@h_studies[dataset[:doi]])), "https://dx.doi.org/#{dataset[:doi]}", {"data-bs-toggle" => 'tooltip', "data-bs-placement" => 'bottom',  "data-bs-html" => 'true',  "title" => @h_studies[dataset[:doi]].title, :target => '_blank'})  %>
+            <%= dataset[:doi].nil? ? "" : (link_to raw(display_study(@h_studies[dataset[:doi]])), "https://dx.doi.org/#{dataset[:doi]}", {"data-bs-toggle" => 'tooltip', "data-bs-placement" => 'bottom',  "data-bs-html" => 'true',  "title" => ((@h_studies[dataset[:doi]]) ? @h_studies[dataset[:doi]].title : ''), :target => '_blank'})  %>
           </td>
 	  <td class='text-end pe-5'><%= display_nber_cells(dataset.number_of_cells[0]) %></td>
 	  <td  class="text-center"><%= raw dataset[:assay_info].uniq.join("<br/>") %></td>
@@ -103,15 +103,19 @@
 	    <%# dataset.organisms.join("<br/>") %>
 	    <% @fields.each do |field_name, field_hash| %>
             <% if [:organisms, :tissue, :developmental_stage].include? field_name %>
-            <%= raw display_field(field_name, dataset, @fields) %><br/>
-            <% end %>
+            <% field_content = display_field(field_name, dataset, @fields) %>
+	    <%= raw(field_content + "<br/>") if field_content != '' %>
+	    <% end %>
             <% end %>
 	  </td>
 	  <td class='text-center'>
-	    <i>sex:</i> <%= raw dataset[:sex].uniq.sort.join(", ") %><br/>
+	    <% if dataset[:sex] and sex_list = dataset[:sex].uniq.sort and sex_list.size > 0 %>
+	    <i>sex:</i> <%= raw sex_list.join(", ") %><br/>
+	    <% end %>
 	    <% @fields.each do |field_name, field_hash| %>
 	    <% if [:disease, :cell_types].include? field_name %>
-	    <%= raw display_field(field_name, dataset, @fields) %><br/>
+	    <% field_content = display_field(field_name, dataset, @fields) %>
+	     <%= raw(field_content + "<br/>") if field_content != '' %>
 	    <% end %>
 	    <% end %>
 	  </td>
@@ -259,6 +263,10 @@
             spinner.style.display = "none";
             container.style.display = "block";
             _search_form.style.display = "block";
+  },
+  "drawCallback": function(settings) {
+  console.log('Table redrawn - page change detected');
+          initTooltips()         
         }
     })
 
