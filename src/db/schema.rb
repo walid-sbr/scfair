@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_31_080744) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_22_141020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -38,6 +38,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_31_080744) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "journals", force: :cascade do |t|
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "ontology_terms", force: :cascade do |t|
     t.string "identifier"
     t.string "name"
@@ -49,6 +55,26 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_31_080744) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identifier"], name: "index_ontology_terms_on_identifier", unique: true
+  end
+
+  create_table "studies", force: :cascade do |t|
+    t.text "title"
+    t.text "first_author"
+    t.text "authors"
+    t.text "authors_json"
+    t.text "abstract"
+    t.bigint "journal_id"
+    t.text "volume"
+    t.text "issue"
+    t.text "doi"
+    t.integer "year"
+    t.text "comment"
+    t.text "description"
+    t.datetime "published_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doi"], name: "index_studies_on_doi", unique: true
+    t.index ["journal_id"], name: "index_studies_on_journal_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -63,4 +89,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_31_080744) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "studies", "journals"
 end

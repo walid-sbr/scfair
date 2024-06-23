@@ -4,10 +4,14 @@ class DatasetsController < ApplicationController
 
   def set_globals
 
-    @sources_link = {
-      "CELLxGENE" => 'https://cellxgene.cziscience.com/',
-      "BGEE" => "https://www.bgee.org/",
-      "ASAP" => "https://asap.epfl.ch/"
+    @sources = {
+      "CELLxGENE" => ['https://cellxgene.cziscience.com/', 30],
+      "BGEE" => ["https://www.bgee.org/", 60],
+      "ASAP" => ["https://asap.epfl.ch/", 30]
+    }
+
+    @explore_sources_url = {
+      "CELLxGENE" => "https://cellxgene.cziscience.com/e/\#ID.cxg/"
     }
     @fields = {
       :number_of_cells => {:label => "# Cells"},
@@ -55,6 +59,9 @@ class DatasetsController < ApplicationController
       @datasets = query.results
     end
 
+    studies = Study.where(:doi => @datasets.map{|d| d.doi}.flatten).all
+    @h_studies = {}
+    studies.map{|s| @h_studies[s.doi] = s}
     render :partial => 'search_results'
 
   end

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :studies
+  resources :journals
   resources :datasets do
     collection do
       post :search

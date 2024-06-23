@@ -100,11 +100,11 @@ class ExploreController < ApplicationController
     @number_of_rows = @selected.count
   end
 
-  def ontology_link_generator(type, id)
-    id = id.sub ":", "_" # necessary beacause the url uses _ instead of : in the id
-    url = "https://www.ebi.ac.uk/ols4/ontologies/#{type}/classes/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252F#{id}"
-    return(url)
-  end
+#  def ontology_link_generator(type, id)
+#    id = id.sub ":", "_" # necessary beacause the url uses _ instead of : in the id
+#    url = "https://www.ebi.ac.uk/ols4/ontologies/#{type}/classes/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252F#{id}"
+#    return(url)
+#  end
 
   def generate_url(page)
     url = "#{explore_path(page, @@current_array_params)}"

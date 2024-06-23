@@ -1,9 +1,13 @@
-<div class="d-flex justify-content-between align-items-center flex-grow-1 w-100">
-    <%= render :partial => 'search_form' %>
+<!--<div class="d-flex justify-content-between align-items-center flex-grow-1 w-100"> -->
+<div id='search_container' class='w-100'>
 
-    <div class="overflow-scroll w-75 h-100">
-        <div id='datasets_container' class="p-2 h-100 w-100" style="display: none"></div>
+  <%= render :partial => 'search_form' %>
+  
+  <!--    <div class="overflow-scroll w-100 h-100"> -->
+    <div id='datasets_container' class="hidden"><!-- style="display: none">-->
     </div>
+    <!--    </div> -->
+  <!--</div>-->
 </div>
 
 <div id='spinner' class="flex-column justify-content-center align-items-center h-100 w-100" style='display: flex'>
@@ -76,6 +80,16 @@ for (let i=0; i<l.length; i++){
 
   
   }
+
+  function upd_nber_filters(){
+  var nber_filters = 0;
+  $(".filter_field").each(function(){
+  if ($(this).val() != ''){
+   nber_filters +=1;
+  } 
+  })
+  $("#nber_applied_filters").html(nber_filters)
+  }
   
 function createAutocompleteWithValues(hListValues) {
   return function(fields, i) {
@@ -83,9 +97,16 @@ function createAutocompleteWithValues(hListValues) {
   if ($("#filter_" + fields[i]).data('ui-autocomplete')) {
   $("#filter_" + fields[i]).autocomplete('destroy');
   }
-      $("#filter_" + fields[i]).autocomplete({
+
+  $("#filter_" + fields[i]).keyup(function(){
+  if ($(this).val() != ''){
+  $("#filter_" + fields[i] + "_reset").removeClass("hidden")
+  upd_nber_filters()
+  }
+  })
+  $("#filter_" + fields[i]).autocomplete({
             minLength: 0,
-            appendTo: "#filter" + fields[i] + "autocomplete_container",
+            appendTo: "#filter_" + fields[i] + "_autocomplete_container",
             classes: {
                 "ui-autocomplete": "test_ui",
             },
@@ -107,8 +128,13 @@ slicedData.sort(function(a, b) {
   $(this).val(ui.item.value)
              let dataset_ids = getListofDatasetIDs(hListValues)
   filterDataTable2(dataset_ids)
-   set_filter_autocomplete(h_list_values, dataset_ids)
-            }
+  set_filter_autocomplete(h_list_values, dataset_ids)
+  $("#filter_" + fields[i] + "_reset").removeClass("hidden")
+  upd_nber_filters()
+  }
+  }).blur(function() {
+            console.log("empty list #filter_" + fields[i] + "_automplete_container...")
+            $("#filter_" + fields[i] + "_automplete_container").empty()            
         }).focus(function() {
             $(this).autocomplete("search");
         }).click(function() {
@@ -171,9 +197,13 @@ $(".filter_field").on('keyup', function(e) {
 			let dataset_ids = getListofDatasetIDs(h_list_values)
 			if (dataset_ids.length == 0){
 			dataset_ids = datasets.map(x => x.id)
-			}
+    }
+    if ($(this).val() == ""){
+     $("#" + this.id + "_reset").addClass("hidden")
+    }
     filterDataTable2(dataset_ids)
-     set_filter_autocomplete(h_list_values, dataset_ids)
+    set_filter_autocomplete(h_list_values, dataset_ids)
+    upd_nber_filters()
 			}
 })
 
@@ -190,7 +220,7 @@ var data = [
 {name : 'q', value : $("#dataset_free_text").val()}
 //{name : 'filters', value : JSON.stringify(h_filters)}
 ]
-refresh_post("datasets_container", "<%= search_datasets_path() %>", data, 'post', {loading:'fa-2x'})
+refresh_post("datasets_container", "<%= search_datasets_path() %>", data, 'post', {loading:''})
 }
 
 
