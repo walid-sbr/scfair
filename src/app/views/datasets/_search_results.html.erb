@@ -1,3 +1,4 @@
+<%# @h_ext_sources.to_json %>
 <% if @datasets.size > 0 %>
 <%# @total %>
 <p style="color: green"><%= notice %></p>
@@ -38,24 +39,6 @@
           <p class="text-center">Other metadata</p>
         </th>
 
-	
-        <!-- PROCESSED DATA TABLE HEADER -->
-<!--        <th scope="col" class="text-center">
-            <p class="text-center">Processed Data</p>
-        </th>
-
-        <th scope="col" class="text-center">
-            <p class="text-center">Link to Dataset</p>
-        </th>
-
-        <th scope="col" class="text-center">
-            <p class="text-center">Link to explore Data</p>
-        </th>
-
-        <th scope="col" class="text-center">
-            <p class="text-center">External resources</p>
-        </th>
-	-->
       </tr>
     </thead>
     <tbody class="">
@@ -84,13 +67,26 @@
               <small><i><%= "#{raw_data_links.size} external resources" %></i></small>                                                                                          
             </span>                                                                                                                                                          
             <ul class="dropdown-menu">                                                                                                                                         
-              <% raw_data_links.each do |link| %>                                                                                                  
-              <li class="px-2 py-1">                                                                                                                                     
-                <% uri = URI.parse(link) %>                                                                                              
-                <%= link_to uri.host, link, target: "_blank" %>                                                                              
-              </li>                                                                                                                                                      
+	      <% tmp_links = [] %>
+              <% raw_data_links.each_with_index do |link, i| %>
+              <% es_str = dataset.ext_source_ids[i] %>
+              <% uri = URI.parse(link) %>
+	      <% disp =  uri.host %>
+	      <% if es_str and t = es_str.split("|") and es = @h_ext_sources[t[0].to_i] %>
+	      <% if t[1] and t[1] != '' %>
+	      <% disp = "<i>#{es.name}:</i> #{t[1] || ''}" %>
+	      <% else %>
+	      <% disp = "<i>#{es.name}</i>" %>
+	      <% end %>
+	      <% end %>
+              <% tmp_links.push [disp, link] %>                                                                              
               <% end %>                                                                                                                                                        
-            </ul>
+	      <% tmp_links.sort.each do |l| %>
+	        <li class="px-2 py-1">
+		  <%= link_to raw(l[0]), l[1], target: "_blank" %>
+		</li>
+	      <% end %>
+	    </ul>
 	    <% end %>
 	  </td>
 	  <td class="text-center <%= (dataset[:doi].nil?) ? 'bg-light' : '' %> ">
@@ -119,131 +115,8 @@
 	    <% end %>
 	    <% end %>
 	  </td>
-	  <!--                <% @fields.each do |field_name, field_hash| %>
-		<% field_label = field_hash[:label] %>
-                    <% if dataset[field_name].uniq.length > 1 %>
-                        <%case field_name %>
-                            <%when :tissue_uberon %>
-                                <td class="text-center">
-                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <%= "#{dataset[field_name].uniq.length} #{field_label.to_s.downcase.pluralize}" %>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                      <% for i in (0..dataset[field_name].uniq.length - 1)%>
-                                            <li class="px-2 py-1">
-                                                <%= link_to dataset[field_name].uniq[i], "#{ontology_link_generator "uberon", dataset[field_name][i]}", target: "_blank" %>
-                                            </li>
-                                        <%end%>
-                                    </ul>
-                                </td>                                   
-                            <%when :developmental_stage_id %>
-                                <td class="text-center">
-                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <%= "#{dataset[field_name].uniq.length} #{field_label.to_s.downcase.pluralize}" %>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <% for i in (0..dataset[field_name].uniq.length - 1)%>
-                                            <li class="px-2 py-1">
-                                                <% type =  dataset[field_name].uniq[i].split(":")[0].downcase %>
-                                                <%= link_to dataset[field_name].uniq[i], "#{ontology_link_generator type, dataset[field_name][i]}", target: "_blank" %>
-                                            </li>
-                                        <% end %>
-                                    </ul>
-                                </td>                                     
-                            <%else%>
-                                <td class="text-center">
-                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <%= "#{dataset[field_name].uniq.length} #{field_label.to_s.downcase.pluralize}" %>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <% for i in (0..dataset[field_name].uniq.length - 1)%>
-                                            <li class="px-2 py-1">
-                                                <%= dataset[field_name].uniq[i] %>
-                                            </li>
-                                        <%end%>
-                                    </ul>
-                                </td> 
-                        <%end%>                                
-                    <%else%>
-                        <% if !(dataset[field_name].uniq.length == 0) %>
-                            <% dataset[field_name][0].nil? ? empty = true : empty = false %>
-                            <td class="text-center <%= empty ? "bg-light": "" %>">
-                                <%case field_name%>
-                                    <%when :tissue_uberon %>
-                                        <%= link_to dataset[field_name][0], "#{ontology_link_generator "uberon", dataset[field_name][0]}", target: "_blank" %>
-                                    <%when :developmental_stage_id %>
-                                        <% type =  dataset[field_name][0].split(":")[0].downcase %>
-                                        <%= link_to dataset[field_name][0], "#{ontology_link_generator type, dataset[field_name][0]}", target: "_blank" %>
-                                    <%else%>
-                                        <%= dataset[field_name][0] %>
-                                <%end%>
-                            </td>
-                        <%else%>
-                            <td class="bg-light">
-                            </td>
-                        <%end%>
-                    <%end%>
-                <%end%>
--->
-<!--
-                <% if dataset[:processed_data].uniq.length > 1 %>
-                    <td class="text-center">
-                        <ul class="list-group list-group-flush">
-                            <% for i in (0..dataset[:processed_data].uniq.length - 1) %>
-                                <li class="list-group-item">
-                                    <% extension = dataset[:processed_data].uniq[i].split('.')[-1]%>
-                                    <%= link_to "Download .#{extension}", dataset[:processed_data].uniq[i], class: "btn btn-dark px-2 w-75 display-block" %>
-                                </li>
-                            <% end %>
-                        </ul>
-                    </td>
-                <% else %>
-                    <% dataset[:processed_data][0].nil? ? empty = true : empty = false %>
-                        <td class="text-center <%= empty ? 'bg-light' : '' %>">
-                            <% empty ? '' : extension = dataset[:processed_data][0].split('.')[-1] %>
-                            <%= empty ? '' : (link_to "Download .#{extension}", dataset[:processed_data][0], class: "btn btn-dark px-2 w-75 display-block") %>
-                        </td>
-                <% end %>
-
-                <% dataset[:link_to_dataset].nil? ? empty = true : empty = false %>
-                    <td class="text-center <%= empty ? "bg-light" : "" %>">
-                        <%if !empty%>
-                            <%= link_to "Go to #{dataset[:source]} dataset", dataset[:link_to_dataset], target: "_blank", class: "btn btn-warning px-2 display-block" %>
-                        <%end%>
-                    </td>
-
-                <% dataset[:link_to_explore_data].nil? ? empty = true : empty = false %>
-                    <td class="text-center <%= empty ? "bg-light" : "" %>">
-                        <%if !empty%>
-                            <%= link_to "Go to #{dataset[:source]} explorer", "#{dataset[:link_to_explore_data][0]}", target: "_blank", class: "btn btn-outline-dark px-2 display-block" %>
-                        <%end%>
-                    </td>
-
-                <% if dataset[:link_to_raw_data].uniq.length > 1 %>
-                    <td class="text-center">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <%= "#{dataset[:link_to_raw_data].uniq.length} external resources" %>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <% for i in (0..dataset[:link_to_raw_data].uniq.length - 1)%>
-                                <li class="px-2 py-1">
-                                    <% uri = URI.parse(dataset[:link_to_raw_data].uniq[i]) %>
-                                <%= link_to uri.host, dataset[:link_to_raw_data].uniq[i], target: "_blank" %>
-                                </li>
-                            <%end%>
-                        </ul>
-                    </td> 
-                <% else %>
-                    <% dataset[:link_to_raw_data].length == 0 ? empty = true : empty = false %>
-                    
-                    <td class="text-center <%= empty ? 'bg-light' : '' %>"> 
-                        <% empty ? "" : uri = URI(dataset[:link_to_raw_data].uniq[0]) %>
-                        <%= empty ? '' : (link_to uri.host, dataset[:link_to_raw_data].uniq[0], target: "_blank", class: "btn btn-secondary px-2 w-75 display-block") %>
-                    </td>
-                <% end %>
--->
-            </tr>
-        <%end%>
+        </tr>
+        <% end %>
     </tbody>
   </table>
 

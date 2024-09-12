@@ -62,6 +62,9 @@ class DatasetsController < ApplicationController
     studies = Study.where(:doi => @datasets.map{|d| d.doi}.flatten).all
     @h_studies = {}
     studies.map{|s| @h_studies[s.doi] = s}
+    @h_ext_sources = {}
+    ExtSource.all.map{|es| @h_ext_sources[es.id] = es}
+    
     render :partial => 'search_results'
 
   end

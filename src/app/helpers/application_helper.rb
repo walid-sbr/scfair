@@ -20,28 +20,32 @@ module ApplicationHelper
     html = ''
     if vals.length > 1 
       
-      #html += "<button class='btn dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-expanded='false'>"
-      html += "<span class='dropdown-toggle pointer' data-bs-toggle='dropdown' aria-expanded='false'>"
-      html += "<i> #{vals.length} #{h[f][:label].to_s.downcase.pluralize}</i>"
-      #    html += "</button>
-       html += "</span> 
-                 <ul class='dropdown-menu'>"
-      
+      list = []
       for i in (0 .. vals.length - 1)
-        html += "<li class='px-2 py-1'>"
-         case f
+        case f
          when :tissue
-           html += link_to vals[i], "#{ontology_link_generator "uberon", d[:tissue_uberon][i]}", target: "_blank"
+           list.push link_to vals[i], "#{ontology_link_generator "uberon", d[:tissue_uberon][i]}", target: "_blank"
          when :developmental_stage
            type =  d[:developmental_stage_id][i].split(":")[0].downcase
-           html += link_to vals[i], "#{ontology_link_generator type, d[:developmental_stage_id][i]}", target: "_blank"
-        else
-           html += vals[i]
-         end
+           list.push link_to vals[i], "#{ontology_link_generator type, d[:developmental_stage_id][i]}", target: "_blank"
+         else
+           list.push vals[i]
+        end
+      end
+
+      list.uniq!
+      html += "<span class='dropdown-toggle pointer' data-bs-toggle='dropdown' aria-expanded='false'>"
+      html += "<i> #{list.size} #{h[f][:label].to_s.downcase.pluralize}</i>"
+      html += "</span><ul class='dropdown-menu'>"
+      
+      list.each do |e|
+        html += "<li class='px-2 py-1'>"
+        html += e
         html += " </li>"
       end
+      
       html += "</ul>"
-
+       
     else
 
       if !(vals.length == 0)                                                                                                                   
