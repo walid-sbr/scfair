@@ -2,6 +2,7 @@
 
 class Dataset < ApplicationRecord
   searchable do
+    integer :id
     text :collection_id
     text :dataset_id
     text :source
@@ -21,7 +22,6 @@ class Dataset < ApplicationRecord
     text :link_to_explore_data
     text :link_to_raw_data
     text :dataset_hash
-
     text :ontology_children, default_boost: 0.3, stored: true do
       terms = [tissue_uberon, developmental_stage_id].flatten
       ots = OntologyTerm.where(:identifier => terms).all

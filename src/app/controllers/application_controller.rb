@@ -7,8 +7,8 @@ class ApplicationController < ActionController::Base
     current_user and ['fabrice.david@epfl.ch'].include?(current_user.email)
   end
   
-  def init_session
-
+  def init_session    
+    session[:dataset_settings] ||= {:free_text => '', :filters => {}}
     session[:d_settings] ||= {:free_text => '', :filters => {}}
   end
 

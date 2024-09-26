@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   resources :datasets do
     collection do
       post :search
+      get :search2
+      get :index2
+      post :do_search
+      post :set_search_session
     end
   end
   devise_for :users

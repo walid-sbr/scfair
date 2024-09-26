@@ -30,6 +30,76 @@ class DatasetsController < ApplicationController
 
   end
 
+  def index2
+  end
+  
+  def set_search_session
+    [:dataset_search_type].each do |e|
+      session[:dataset_settings][e] ||= params[e] if params[e]
+    end
+  end
+
+  def search2
+    session[:dataset_settings][:search_view_type] ||= 'list'
+    session[:dataset_settings][:free_text] = params[:free_text] if params[:free_text]
+    if params[:nolayout] == "1"
+      render :layout => nil
+    else
+      render :layout => 'welcome'
+    end
+  end
+
+  def do_search
+    set_globals()
+    session[:dataset_settings][:search_view_type]= 'list'
+    session[:dataset_settings][:search_view_type] = params[:search_view_type] if params[:search_view_type] and params[:search_view_type] != ''
+    session[:dataset_settings][:free_text] ||= ''
+    session[:dataset_settings][:free_text] = params[:free_text] if params[:free_text]
+    session[:dataset_settings][:search_type] ||= 'public'
+
+    session[:dataset_settings]["per_page".to_sym]||=50 #if !session[:settings][(prefix + "_per_page").to_sym] or session[:settings][(prefix + "_per_page").to_sym]== 0                               
+    session[:dataset_settings]["page".to_sym]||=1
+    ['per_page', 'page'].each do |e|
+      session[:dataset_settings][e.to_sym] = params[e.to_sym].to_i if params[e.to_sym] and params[e.to_sym].to_i != 0
+    end
+
+
+    free_text = session[:dataset_settings][:free_text]
+
+    free_text.strip!
+
+    words = free_text.split(/\s*[; ]\s*/)
+
+#    @workspace = Workspace.where(:key => params[:workspace_key]).first if params[:workspace_key]
+
+    @datasets = []
+
+    @h_counts = {
+      :all => Dataset.count
+    }
+
+    @query = Dataset.search do
+      fulltext words.join(" ").gsub(/\$\{jndi\:/, '').gsub(/[\{\}\$\:\\]/, '')    
+      order_by(:id, :asc)
+      paginate :page => session[:dataset_settings][:page], :per_page => session[:dataset_settings][:per_page]
+    end
+
+    @datasets= @query.results
+
+
+    studies = Study.where(:doi => @datasets.map{|d| d.doi}.flatten).all
+    @h_studies = {}
+    studies.map{|s| @h_studies[s.doi] = s}
+    @h_ext_sources = {}
+    ExtSource.all.map{|es| @h_ext_sources[es.id] = es}
+
+    
+    now = Time.now
+
+    render :partial => 'do_search' 
+                           
+  end
+  
   # GET /datasets or /datasets.json
   def index
     set_globals()
@@ -37,7 +107,6 @@ class DatasetsController < ApplicationController
 
     #    @datasets = Dataset.all
   end
-
 
   def search
 
